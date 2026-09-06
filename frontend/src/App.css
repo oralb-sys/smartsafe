@@ -1,0 +1,80 @@
+#root {
+  min-height: 100vh;
+}
+
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+header {
+  padding: 32px;
+  border-radius: 16px;
+  background: #173b5e;
+  color: white;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 2.5rem;
+}
+
+header p {
+  margin: 0;
+  color: #dbeafe;
+}
+
+section {
+  margin-top: 32px;
+}
+
+section h2 {
+  margin-bottom: 16px;
+}
+
+section > p {
+  line-height: 1.7;
+}
+
+article {
+  margin-top: 16px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: white;
+}
+
+article h3 {
+  margin-top: 0;
+  color: #173b5e;
+}
+
+article p {
+  line-height: 1.6;
+}
+
+footer {
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid #d1d5db;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+  section[aria-labelledby="modules-title"] {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  section[aria-labelledby="modules-title"] h2 {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  article {
+    margin-top: 0;
+  }
+}
