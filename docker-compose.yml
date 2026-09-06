@@ -4,14 +4,26 @@ services:
     container_name: smartsafe-mariadb
     restart: unless-stopped
     environment:
-      MARIADB_DATABASE: smartsafe
-      MARIADB_USER: smartsafe_user
-      MARIADB_PASSWORD: smartsafe_password
-      MARIADB_ROOT_PASSWORD: root_password
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
+
+  backend:
+    build:
+      context: ./backend
+    container_name: smartsafe-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: mysql+pymysql://${MARIADB_USER}:${MARIADB_PASSWORD}@mariadb:3306/${MARIADB_DATABASE}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mariadb
 
 volumes:
   mariadb_data:
