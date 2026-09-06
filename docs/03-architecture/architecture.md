@@ -23,7 +23,7 @@ Service Layer
 ↓
 Repository Layer
 ↓
-PostgreSQL
+MariaDB
 
 Representación conceptual:
 
@@ -60,7 +60,7 @@ Representación conceptual:
                │
                ▼
 ┌─────────────────────────────┐
-│         PostgreSQL          │
+│         MariaDB          │
 └─────────────────────────────┘
 ```
 
