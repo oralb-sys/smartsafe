@@ -19,9 +19,11 @@ def load_connection_module(monkeypatch, database_url):
     fake_sessionmaker = MagicMock()
 
     monkeypatch.setenv("DATABASE_URL", database_url)
+    fake_create_engine = MagicMock(return_value=fake_engine)
+
     monkeypatch.setattr(
         "sqlalchemy.create_engine",
-        lambda *args, **kwargs: fake_engine,
+        fake_create_engine,
     )
     monkeypatch.setattr(
         "sqlalchemy.orm.sessionmaker",
@@ -34,6 +36,11 @@ def load_connection_module(monkeypatch, database_url):
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+
+    fake_create_engine.assert_called_once_with(
+    database_url,
+    pool_pre_ping=True,
+    )
 
     return module, fake_engine, fake_sessionmaker
 
