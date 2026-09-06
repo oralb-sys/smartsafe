@@ -228,24 +228,58 @@ Formato común:
 
 \---
 
-## 8\. Documentación OpenAPI
+## 8. Documentación OpenAPI
 
-FastAPI deberá publicar:
+FastAPI publica automáticamente la documentación interactiva y el esquema OpenAPI de SmartSafe.
 
-```text
-/docs
+### 8.1. Interfaces disponibles
+
+Con el backend ejecutándose localmente en el puerto 8000, se puede acceder a:
+
+| Recurso         | URL                                  | Propósito                                                          |
+| --------------- | ------------------------------------ | ------------------------------------------------------------------ |
+| Swagger UI      | `http://127.0.0.1:8000/docs`         | Explorar y probar los endpoints mediante una interfaz interactiva. |
+| ReDoc           | `http://127.0.0.1:8000/redoc`        | Consultar la documentación de referencia de la API.                |
+| Esquema OpenAPI | `http://127.0.0.1:8000/openapi.json` | Obtener la especificación de la API en formato JSON.               |
+
+### 8.2. Configuración actual
+
+La aplicación declara el título **SmartSafe API**, la versión `0.1.0` y una descripción de los módulos SmartReport y SmartSOS. Asimismo, incluye la advertencia de que SmartSOS es un prototipo académico y no reemplaza los servicios oficiales de emergencia.
+
+Actualmente, el endpoint implementado y documentado es:
+
+```http
+GET /health
 ```
 
-y:
+Este endpoint permite verificar que el servicio se encuentra disponible y responde con:
 
-```text
-/redoc
+```json
+{
+  "status": "ok",
+  "service": "SmartSafe API"
+}
 ```
 
-Los endpoints deberán especificar:
+La operación se encuentra agrupada bajo la etiqueta **Health** y especifica su resumen, descripción, código HTTP 200 y ejemplo de respuesta.
 
-* request;
-* response;
-* parámetros;
-* códigos HTTP.
+### 8.3. Estado de implementación
+
+Las rutas de autenticación, SmartReport, SmartSOS y UrbanEvent descritas en las secciones anteriores constituyen el contrato de API previsto para el MVP. Se incorporarán progresivamente al esquema OpenAPI conforme sean implementadas en los siguientes Sprints.
+
+Por tanto, la documentación generada actualmente no debe interpretarse como evidencia de que dichos endpoints ya están disponibles.
+
+### 8.4. Criterios para nuevos endpoints
+
+Cada endpoint que se implemente deberá documentar, según corresponda:
+
+* propósito y descripción de la operación;
+* parámetros de ruta y consulta;
+* cuerpo de solicitud y esquema de respuesta;
+* códigos HTTP de éxito y error;
+* ejemplos representativos;
+* requisitos de autenticación y autorización.
+
+La documentación deberá mantenerse sincronizada con el comportamiento real de la API.
+
 
