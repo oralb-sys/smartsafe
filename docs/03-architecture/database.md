@@ -42,7 +42,7 @@ Representa a los usuarios de SmartSafe.
 
 | Campo | Tipo | Restricción |
 |---|---|---|
-| id | UUID | PK |
+| id | CHAR(36) | PK |
 | name | VARCHAR(100) | NOT NULL |
 | last_name | VARCHAR(100) | NOT NULL |
 | email | VARCHAR(150) | UNIQUE, NOT NULL |
@@ -63,7 +63,7 @@ Catálogo de tipos de eventos.
 
 | Campo | Tipo | Restricción |
 |---|---|---|
-| id | UUID | PK |
+| id | CHAR(36) | PK |
 | code | VARCHAR(50) | UNIQUE, NOT NULL |
 | name | VARCHAR(100) | NOT NULL |
 | description | VARCHAR(500) | NULL |
@@ -103,9 +103,9 @@ Representa una ocurrencia concreta de un evento.
 
 | Campo | Tipo | Restricción |
 |---|---|---|
-| id | UUID | PK |
-| user_id | UUID | FK, NOT NULL |
-| event_type_id | UUID | FK, NOT NULL |
+| id | CHAR(36) | PK |
+| user_id | CHAR(36) | FK, NOT NULL |
+| event_type_id | CHAR(36) | FK, NOT NULL |
 | description | TEXT | NULL |
 | latitude | DECIMAL(9,6) | NOT NULL |
 | longitude | DECIMAL(9,6) | NOT NULL |
@@ -198,7 +198,7 @@ erDiagram
     EVENT_TYPE ||--o{ EVENT_RECORD : classifies
 
     USER {
-        UUID id PK
+        CHAR(36) id PK
         VARCHAR name
         VARCHAR last_name
         VARCHAR email UK
@@ -209,7 +209,7 @@ erDiagram
     }
 
     EVENT_TYPE {
-        UUID id PK
+        CHAR(36) id PK
         VARCHAR code UK
         VARCHAR name
         VARCHAR description
@@ -217,9 +217,9 @@ erDiagram
     }
 
     EVENT_RECORD {
-        UUID id PK
-        UUID user_id FK
-        UUID event_type_id FK
+        CHAR(36) id PK
+        CHAR(36) user_id FK
+        CHAR(36) event_type_id FK
         TEXT description
         DECIMAL latitude
         DECIMAL longitude
