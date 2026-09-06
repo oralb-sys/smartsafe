@@ -1,11 +1,12 @@
 import uuid
 from datetime import datetime, timezone
+from decimal import Decimal
 
 from sqlalchemy import DECIMAL, ForeignKey, String, Text, TIMESTAMP
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base
-from decimal import Decimal
+
 
 class EventRecord(Base):
     __tablename__ = "event_records"
@@ -56,11 +57,12 @@ class EventRecord(Base):
         onupdate=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
+
     user: Mapped["User"] = relationship(
-    "User",
-    back_populates="events",
+        "User",
+        back_populates="events",
     )
     event_type: Mapped["EventType"] = relationship(
-    "EventType",
-    back_populates="events",
+        "EventType",
+        back_populates="events",
     )

@@ -41,11 +41,12 @@ class User(Base):
         nullable=False,
     )
     created_at: Mapped[datetime] = mapped_column(
-    TIMESTAMP(timezone=True),
-    default=lambda: datetime.now(timezone.utc),
-    nullable=False,
+        TIMESTAMP(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
     )
+
     events: Mapped[list["EventRecord"]] = relationship(
-    "EventRecord",
-    back_populates="user",
+        "EventRecord",
+        back_populates="user",
     )

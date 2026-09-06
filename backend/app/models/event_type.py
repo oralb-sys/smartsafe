@@ -31,7 +31,8 @@ class EventType(Base):
         String(20),
         nullable=False,
     )
+
     events: Mapped[list["EventRecord"]] = relationship(
-    "EventRecord",
-    back_populates="event_type",
+        "EventRecord",
+        back_populates="event_type",
     )
