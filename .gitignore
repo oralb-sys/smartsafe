@@ -2,3 +2,8 @@
 __pycache__/
 *.pyc
 .env
+# Python testing and coverage
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/

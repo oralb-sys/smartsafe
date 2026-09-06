@@ -4,3 +4,6 @@ sqlalchemy
 pymysql
 python-dotenv
 alembic
+pytest
+pytest-cov
+httpx
