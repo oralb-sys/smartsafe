@@ -1,0 +1,42 @@
+CREATE DATABASE DB_SMARTSAFE
+USE DB_SMARTSAFE
+
+CREATE TABLE tUsuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombres VARCHAR(50) NOT NULL,
+    apellidos VARCHAR(50) NOT NULL,
+    documento VARCHAR(15) NULL,
+    correo VARCHAR(50) UNIQUE,
+    telefono VARCHAR(10)
+);
+
+SELECT * FROM tusuario
+
+CREATE TABLE tPersonal (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    dni VARCHAR(8) NOT NULL UNIQUE,
+    nombres VARCHAR(50) NOT NULL,
+    apellidos VARCHAR(50) NOT NULL,
+    cargo VARCHAR(20) NOT NULL,
+    telefono VARCHAR(10),
+    direccion VARCHAR(100)
+);
+
+CREATE TABLE tEvento (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_personal INT NULL, -- Puede ser NULL si el evento se crea antes de asignarse a alguien
+    descripcion TEXT,
+    foto_path VARCHAR(255), -- Ruta del archivo en el servidor o disco
+    coordenadas POINT NOT NULL, -- Almacena Latitud y Longitud de forma espacial
+    estado VARCHAR(20) DEFAULT 'Pendiente', -- Ej: Pendiente, En proceso, Finalizado
+    fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora automáticas
+    fue_atendido BOOLEAN DEFAULT FALSE, -- Almacena 0 (Falso) o 1 (Verdadero)
+
+    -- Configuración de las Claves Foráneas (Foreign Keys)
+    CONSTRAINT fk_evento_usuario FOREIGN KEY (id_usuario) 
+        REFERENCES tUsuario(id) ON DELETE CASCADE ON UPDATE CASCADE,
+        
+    CONSTRAINT fk_evento_personal FOREIGN KEY (id_personal) 
+        REFERENCES tPersonal(id) ON DELETE SET NULL ON UPDATE CASCADE
+);
