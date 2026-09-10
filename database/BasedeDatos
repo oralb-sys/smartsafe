@@ -10,7 +10,7 @@ CREATE TABLE tUsuario (
     telefono VARCHAR(10)
 );
 
-SELECT * FROM tusuario
+
 
 CREATE TABLE tPersonal (
     id INT AUTO_INCREMENT PRIMARY KEY,
