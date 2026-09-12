@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers.auth import router as auth_router
 from app.routers.reports import router as reports_router
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI(
@@ -46,6 +47,12 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+app.mount(
+    "/uploads",
+    StaticFiles(directory="uploads", check_dir=False),
+    name="uploads",
 )
 
 app.include_router(auth_router)
