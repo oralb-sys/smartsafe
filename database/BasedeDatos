@@ -3,6 +3,7 @@ USE DB_SMARTSAFE
 
 CREATE TABLE tUsuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    dni VARCHAR(8),
     nombres VARCHAR(50) NOT NULL,
     apellidos VARCHAR(50) NOT NULL,
     documento VARCHAR(15) NULL,
