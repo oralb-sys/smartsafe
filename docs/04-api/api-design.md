@@ -67,9 +67,84 @@ Crear reporte
 
 POST /api/v1/reports
 
-Respuesta:
+Permite registrar una incidencia urbana no urgente asociada al usuario autenticado.
+
+Requiere autenticación mediante Bearer JWT.
+
+Request
+
+{
+  "category": "POTHOLE",
+  "description": "Bache profundo en una vía principal",
+  "latitude": -13.5204,
+  "longitude": -71.9751,
+  "photo_url": null
+}
+
+Categorías permitidas
+
+POTHOLE
+
+WASTE
+
+STREET_LIGHT
+
+WATER_LEAK
+
+Las categorías corresponden al catálogo de tipos de incidencia de SmartReport.
+
+El reporte se crea con:
+
+status = REPORTED
+
+Response exitosa
 
 201 Created
+
+Ejemplo:
+
+{
+  "id": "uuid",
+  "category": "POTHOLE",
+  "description": "Bache profundo en una vía principal",
+  "latitude": -13.520400,
+  "longitude": -71.975100,
+  "photo_url": null,
+  "status": "REPORTED",
+  "created_at": "2026-09-12T20:00:00"
+}
+
+Errores posibles
+
+Usuario no autenticado
+
+401 Unauthorized
+
+Se produce cuando no se proporciona un token JWT válido.
+
+Categoría no disponible
+
+400 Bad Request
+
+Se produce cuando la categoría solicitada no se encuentra disponible en el catálogo de SmartReport.
+
+Datos inválidos
+
+422 Unprocessable Entity
+
+Se produce cuando los datos de entrada no cumplen las validaciones definidas.
+
+Entre otros casos:
+
+categoría no válida;
+
+latitud menor que -90 o mayor que 90;
+
+longitud menor que -180 o mayor que 180;
+
+longitud de descripción superior al límite permitido;
+
+longitud de photo_url superior al límite permitido.
 
 Listar reportes
 
@@ -83,31 +158,38 @@ El usuario CITIZEN verá únicamente sus propios reportes.
 
 El usuario OPERATOR podrá consultar todos los reportes.
 
+Este endpoint forma parte del contrato previsto para el MVP y todavía no se encuentra implementado.
+
 Obtener reporte
 
 GET /api/v1/reports/{id}
 
-Respuestas:
+Respuestas previstas:
 
 200 OK
-
 404 Not Found
+
+Este endpoint todavía no se encuentra implementado.
 
 Actualizar reporte
 
 PUT /api/v1/reports/{id}
 
-Respuesta:
+Respuesta prevista:
 
 200 OK
+
+Este endpoint todavía no se encuentra implementado.
 
 Eliminar reporte
 
 DELETE /api/v1/reports/{id}
 
-Respuesta:
+Respuesta prevista:
 
 204 No Content
+
+Este endpoint todavía no se encuentra implementado.
 
 4. SmartSOS
 
@@ -115,7 +197,7 @@ Crear emergencia
 
 POST /api/v1/emergencies
 
-Respuesta:
+Respuesta prevista:
 
 201 Created
 
@@ -123,39 +205,48 @@ La emergencia deberá crearse con:
 
 status = ACTIVE
 
+Este endpoint todavía no se encuentra implementado.
+
 Listar emergencias
 
 GET /api/v1/emergencies
 
-Respuesta:
+Respuesta prevista:
 
 200 OK
+
+Este endpoint todavía no se encuentra implementado.
 
 Obtener emergencia
 
 GET /api/v1/emergencies/{id}
 
-Respuestas:
+Respuestas previstas:
 
 200 OK
-
 404 Not Found
+
+Este endpoint todavía no se encuentra implementado.
 
 Actualizar emergencia
 
 PUT /api/v1/emergencies/{id}
 
-Respuesta:
+Respuesta prevista:
 
 200 OK
+
+Este endpoint todavía no se encuentra implementado.
 
 Eliminar emergencia
 
 DELETE /api/v1/emergencies/{id}
 
-Respuesta:
+Respuesta prevista:
 
 204 No Content
+
+Este endpoint todavía no se encuentra implementado.
 
 5. UrbanEvent
 
@@ -163,7 +254,7 @@ Consultar eventos integrados
 
 GET /api/v1/events
 
-Filtros opcionales:
+Filtros opcionales previstos:
 
 source
 
@@ -175,9 +266,11 @@ Ejemplo:
 
 GET /api/v1/events?source=SMART_SOS&status=ACTIVE
 
-Respuesta:
+Respuesta prevista:
 
 200 OK
+
+Este endpoint todavía no se encuentra implementado.
 
 6. Códigos HTTP
 
@@ -238,7 +331,9 @@ Formato común previsto para los endpoints de dominio:
   }
 }
 
-El endpoint de autenticación implementado actualmente utiliza el formato estándar de error HTTP de FastAPI:
+Los endpoints implementados actualmente utilizan el formato estándar de error HTTP de FastAPI en determinados casos.
+
+Ejemplo:
 
 {
   "detail": "Credenciales invalidas"
@@ -287,18 +382,32 @@ Asimismo, incluye la advertencia de que SmartSOS es un prototipo académico y no
 Actualmente se encuentran implementados y documentados los siguientes endpoints:
 
 GET /health
-
 POST /api/v1/auth/login
+POST /api/v1/reports
 
 El endpoint /health permite verificar que el servicio se encuentra disponible.
 
 El endpoint /api/v1/auth/login permite autenticar usuarios, validar credenciales, identificar los roles CITIZEN y OPERATOR y emitir un token JWT de acceso.
 
+El endpoint /api/v1/reports permite registrar incidencias urbanas no urgentes asociadas al usuario autenticado, incluyendo categoría, descripción, ubicación y fotografía opcional.
+
+Los nuevos reportes se crean con el estado inicial:
+
+REPORTED
+
 8.3. Estado de implementación
 
-Las rutas de SmartReport, SmartSOS y UrbanEvent descritas en las secciones anteriores constituyen el contrato de API previsto para el MVP y se incorporarán progresivamente conforme sean implementadas.
+Actualmente se encuentran implementadas las siguientes operaciones:
 
-Por tanto, la documentación generada actualmente no debe interpretarse como evidencia de que dichos endpoints ya están disponibles.
+verificación del estado del backend mediante GET /health;
+
+autenticación de usuarios mediante POST /api/v1/auth/login;
+
+registro de incidencias SmartReport mediante POST /api/v1/reports.
+
+Las demás rutas de SmartReport, SmartSOS y UrbanEvent descritas en este documento constituyen el contrato de API previsto para el MVP y se incorporarán progresivamente conforme sean implementadas.
+
+Por tanto, únicamente los endpoints señalados explícitamente como implementados deben considerarse actualmente disponibles en la API.
 
 8.4. Criterios para nuevos endpoints
 

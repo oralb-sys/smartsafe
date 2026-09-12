@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.database.connection import SessionLocal
+from app.dependencies import get_database_session
 from app.repositories.user_repository import UserRepository
 from app.schemas.auth import LoginRequest, LoginResponse
 from app.services.auth_service import AuthService, InvalidCredentialsError
@@ -13,23 +13,15 @@ router = APIRouter(
 )
 
 
-def get_database_session():
-    session = SessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
-
-
 @router.post(
     "/login",
     response_model=LoginResponse,
     status_code=status.HTTP_200_OK,
-    summary="Iniciar sesión",
-    description="Autentica un usuario mediante correo y contraseña.",
+    summary="Iniciar sesi?n",
+    description="Autentica un usuario mediante correo y contrase?a.",
     responses={
         401: {
-            "description": "Credenciales inválidas.",
+            "description": "Credenciales inv?lidas.",
         }
     },
 )
