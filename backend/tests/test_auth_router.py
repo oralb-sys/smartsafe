@@ -3,7 +3,8 @@ from unittest.mock import MagicMock, patch
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.routers.auth import get_database_session, router
+from app.dependencies import get_database_session
+from app.routers.auth import router
 from app.models.user import User
 
 
