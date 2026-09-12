@@ -3,10 +3,9 @@ USE DB_SMARTSAFE
 
 CREATE TABLE tUsuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    dni VARCHAR(8),
+    dni VARCHAR(15) NOT NULL UNIQUE,
     nombres VARCHAR(50) NOT NULL,
-    apellidos VARCHAR(50) NOT NULL,
-    documento VARCHAR(15) NULL,
+    apellidos VARCHAR(50) NOT NULL,    
     correo VARCHAR(50) UNIQUE,
     telefono VARCHAR(10)
 );
