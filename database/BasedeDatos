@@ -30,7 +30,7 @@ CREATE TABLE tEvento (
     descripcion TEXT,
     foto_path VARCHAR(255), -- Ruta del archivo en el servidor o disco
     coordenadas POINT NOT NULL, -- Almacena Latitud y Longitud de forma espacial
-    tipo VARCHAR(50) NOT NULL,
+    tipo VARCHAR(50) NOT NULL DEFAULT '',
     estado VARCHAR(20) DEFAULT 'Pendiente', -- Ej: Pendiente, En proceso, Finalizado
     fecha_hora DATETIME DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora automáticas
     fue_atendido BOOLEAN DEFAULT FALSE, -- Almacena 0 (Falso) o 1 (Verdadero)
