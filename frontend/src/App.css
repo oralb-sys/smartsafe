@@ -212,3 +212,8 @@ select {
     grid-template-columns: 1fr;
   }
 }
+.photo-help {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 0.875rem;
+}

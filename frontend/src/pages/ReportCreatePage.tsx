@@ -17,59 +17,83 @@ function ReportCreatePage() {
   const [description, setDescription] = useState('')
   const [latitude, setLatitude] = useState('-13.5204')
   const [longitude, setLongitude] = useState('-71.9751')
-  const [photoUrl, setPhotoUrl] = useState('')
+  const [photo, setPhoto] = useState<File | null>(null)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(event: FormEvent) {
-    event.preventDefault()
+  event.preventDefault()
 
-    setMessage('')
-    setError('')
-    setLoading(true)
+  setMessage('')
+  setError('')
+  setLoading(true)
 
-    const token = localStorage.getItem('smartsafe_token')
+  const token = localStorage.getItem('smartsafe_token')
 
-    if (!token) {
-      navigate('/login')
-      return
+  if (!token) {
+    setLoading(false)
+    navigate('/login')
+    return
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/reports`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        category,
+        description: description || null,
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+        photo_url: null,
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error('REPORT_CREATE_FAILED')
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/reports`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+    const data = await response.json()
+
+    if (photo) {
+      const formData = new FormData()
+      formData.append('photo', photo)
+
+      const photoResponse = await fetch(
+        `${API_BASE_URL}/reports/${data.id}/photo`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         },
-        body: JSON.stringify({
-          category,
-          description: description || null,
-          latitude: Number(latitude),
-          longitude: Number(longitude),
-          photo_url: photoUrl || null,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('No se pudo registrar la incidencia')
-      }
-
-      const data = await response.json()
-
-      setMessage(
-        `Incidencia registrada correctamente. Estado: ${data.status}`,
       )
 
-      setDescription('')
-      setPhotoUrl('')
-    } catch {
-      setError('No se pudo registrar la incidencia.')
-    } finally {
-      setLoading(false)
+      if (!photoResponse.ok) {
+        setError(
+          'La incidencia fue registrada, pero no se pudo adjuntar la fotografía.',
+        )
+        return
+      }
     }
+
+    setMessage(
+      `Incidencia registrada correctamente. Estado: ${data.status}`,
+    )
+
+    setDescription('')
+    setPhoto(null)
+  } catch {
+    setError('No se pudo registrar la incidencia.')
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <main className="report-page">
@@ -141,15 +165,41 @@ function ReportCreatePage() {
             </div>
           </div>
 
-          <label htmlFor="photoUrl">URL de fotografía (opcional)</label>
+          <label htmlFor="photo">
+  Fotografía (opcional)
+</label>
 
-          <input
-            id="photoUrl"
-            type="url"
-            value={photoUrl}
-            onChange={(event) => setPhotoUrl(event.target.value)}
-            placeholder="https://..."
-          />
+<input
+  id="photo"
+  type="file"
+  accept="image/*"
+  capture="environment"
+  onChange={(event) => {
+    const selectedFile =
+      event.target.files?.[0] ?? null
+
+    if (
+      selectedFile &&
+      selectedFile.size > 5 * 1024 * 1024
+    ) {
+      setError(
+        'La fotografía no puede superar los 5 MB.',
+      )
+      event.target.value = ''
+      setPhoto(null)
+      return
+    }
+
+    setError('')
+    setPhoto(selectedFile)
+  }}
+/>
+
+<p className="photo-help">
+  En móvil puedes tomar una foto con la cámara.
+  También puedes seleccionar una imagen existente.
+  Tamaño máximo: 5 MB.
+</p>
 
           {message && <p className="form-success">{message}</p>}
           {error && <p className="form-error">{error}</p>}

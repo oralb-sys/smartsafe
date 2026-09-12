@@ -10,7 +10,16 @@ from app.services.report_service import (
     InvalidReportCategoryError,
     ReportService,
 )
+from pathlib import Path
 
+from fastapi import File, UploadFile
+from app.services.report_photo_service import (
+    ImageTooLargeError,
+    InvalidImageTypeError,
+    ReportNotFoundError,
+    ReportOwnershipError,
+    ReportPhotoService,
+)
 
 router = APIRouter(
     prefix="/api/v1/reports",
@@ -60,6 +69,79 @@ def create_report(
     return ReportCreateResponse(
         id=event.id,
         category=category,
+        description=event.description,
+        latitude=event.latitude,
+        longitude=event.longitude,
+        photo_url=event.photo_url,
+        status=event.status,
+        created_at=event.created_at,
+    )
+@router.post(
+    "/{report_id}/photo",
+    response_model=ReportCreateResponse,
+    summary="Adjuntar fotografía a un reporte",
+    description=(
+        "Adjunta una fotografía a un reporte existente "
+        "del usuario autenticado."
+    ),
+)
+async def attach_report_photo(
+    report_id: str,
+    photo: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_database_session),
+) -> ReportCreateResponse:
+    repository = EventRecordRepository(session)
+
+    service = ReportPhotoService(
+        repository,
+        Path("uploads/reports"),
+    )
+
+    try:
+        event = await service.attach_photo(
+            report_id=report_id,
+            user_id=current_user.id,
+            photo=photo,
+        )
+    except ReportNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except ReportOwnershipError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=str(exc),
+        ) from exc
+    except InvalidImageTypeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail=str(exc),
+        ) from exc
+    except ImageTooLargeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=str(exc),
+        ) from exc
+
+    event_type_repository = EventTypeRepository(session)
+    event_type = event_type_repository.get_smart_report_type_by_code(
+        next(
+            code
+            for code in (
+                "POTHOLE",
+                "WASTE",
+                "STREET_LIGHT",
+                "WATER_LEAK",
+            )
+            if event.event_type.code == code
+        )
+    )
+
+    return ReportCreateResponse(
+        id=event.id,
+        category=event_type.code,
         description=event.description,
         latitude=event.latitude,
         longitude=event.longitude,
