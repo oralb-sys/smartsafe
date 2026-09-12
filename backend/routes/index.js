@@ -155,7 +155,7 @@ router.post(
           `
           SELECT id, nombres, apellidos
           FROM tUsuario
-          WHERE documento = ?
+          WHERE dni = ?
           LIMIT 1
           `,
           [usuario]
