@@ -50,3 +50,55 @@ def test_update_photo_url():
     session.refresh.assert_called_once_with(event)
 
     assert result is event
+
+def test_list_by_user_id():
+    session = MagicMock()
+
+    report_1 = SimpleNamespace(id="report-1")
+    report_2 = SimpleNamespace(id="report-2")
+
+    scalar_result = MagicMock()
+    scalar_result.all.return_value = [
+        report_1,
+        report_2,
+    ]
+
+    session.scalars.return_value = scalar_result
+
+    repository = EventRecordRepository(
+        session,
+    )
+
+    result = repository.list_by_user_id(
+        "user-1",
+    )
+
+    session.scalars.assert_called_once()
+
+    assert result == [
+        report_1,
+        report_2,
+    ]
+
+
+def test_get_by_id_and_user_id():
+    session = MagicMock()
+
+    report = SimpleNamespace(
+        id="report-1",
+        user_id="user-1",
+    )
+
+    session.scalar.return_value = report
+
+    repository = EventRecordRepository(
+        session,
+    )
+
+    result = repository.get_by_id_and_user_id(
+        "report-1",
+        "user-1",
+    )
+
+    session.scalar.assert_called_once()
+    assert result is report

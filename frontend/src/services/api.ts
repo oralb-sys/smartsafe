@@ -1,16 +1,78 @@
-const API_BASE_URL = 'http://localhost:8000/api/v1'
+import type {
+  ReportDetail,
+  ReportListItem,
+} from '../types/report'
 
-export async function login(email: string, password: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+const API_BASE_URL =
+  'http://localhost:8000/api/v1'
+
+export async function login(
+  email: string,
+  password: string,
+) {
+  const response = await fetch(
+    `${API_BASE_URL}/auth/login`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     },
-    body: JSON.stringify({ email, password }),
-  })
+  )
 
   if (!response.ok) {
-    throw new Error('Credenciales inválidas')
+    throw new Error(
+      'Credenciales inválidas',
+    )
+  }
+
+  return response.json()
+}
+
+export async function getMyReports(
+  token: string,
+): Promise<ReportListItem[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/reports`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudieron obtener los reportes.',
+    )
+  }
+
+  return response.json()
+}
+
+export async function getReportDetail(
+  reportId: string,
+  token: string,
+): Promise<ReportDetail> {
+  const response = await fetch(
+    `${API_BASE_URL}/reports/${reportId}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudo obtener el detalle del reporte.',
+    )
   }
 
   return response.json()

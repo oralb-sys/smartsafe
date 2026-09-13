@@ -2,6 +2,10 @@
   min-height: 100vh;
 }
 
+/* =========================
+   Login y Dashboard
+   ========================= */
+
 .login-page,
 .dashboard-page {
   min-height: 100vh;
@@ -61,6 +65,15 @@ input {
   border-radius: 8px;
 }
 
+textarea,
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: white;
+}
+
 button {
   margin-top: 24px;
   padding: 12px 16px;
@@ -79,6 +92,11 @@ button:disabled {
 .form-error {
   margin: 16px 0 0;
   color: #b91c1c;
+}
+
+.form-success {
+  margin: 16px 0 0;
+  color: #166534;
 }
 
 .dashboard-page {
@@ -130,17 +148,9 @@ button:disabled {
   color: #173b5e;
 }
 
-@media (max-width: 700px) {
-  .login-card,
-  .module-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .login-brand,
-  form {
-    padding: 32px;
-  }
-}
+/* =========================
+   Registro de incidencias
+   ========================= */
 
 .report-page {
   min-height: 100vh;
@@ -178,15 +188,6 @@ button:disabled {
   padding: 32px;
 }
 
-textarea,
-select {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  background: white;
-}
-
 .coordinates-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -202,21 +203,20 @@ select {
   background: rgba(255, 255, 255, 0.15);
 }
 
-.form-success {
-  margin: 16px 0 0;
-  color: #166534;
-}
+/* =========================
+   Fotografía
+   ========================= */
 
-@media (max-width: 700px) {
-  .coordinates-grid {
-    grid-template-columns: 1fr;
-  }
-}
 .photo-help {
   margin-top: 8px;
   color: #64748b;
   font-size: 0.875rem;
 }
+
+/* =========================
+   Ubicación / Mapa
+   ========================= */
+
 .location-section {
   margin-top: 24px;
 }
@@ -278,7 +278,198 @@ select {
   color: #166534;
 }
 
+/* =========================
+   US-05 - Mis reportes
+   ========================= */
+
+.reports-page,
+.report-detail-page {
+  min-height: 100vh;
+  padding: 32px 24px;
+}
+
+.reports-container,
+.report-detail-card {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.reports-header,
+.report-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 32px;
+  background: #173b5e;
+  color: white;
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+.reports-header h1,
+.report-detail-header h1 {
+  margin: 0;
+}
+
+.reports-header p,
+.report-detail-header p {
+  margin: 6px 0 0;
+  color: #dbeafe;
+}
+
+.reports-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.report-item {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.report-item-body {
+  padding: 24px;
+}
+
+.report-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.report-item-top h2 {
+  margin: 0;
+  color: #173b5e;
+}
+
+.report-date {
+  margin: 6px 0 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status-reported {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-in_progress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-resolved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.report-item-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.report-detail-button {
+  width: auto;
+  margin: 0;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 8px;
+  background: #173b5e;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report-detail-button:hover {
+  opacity: 0.9;
+}
+
+.empty-state {
+  padding: 48px;
+  text-align: center;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+/* =========================
+   US-05 - Detalle de reporte
+   ========================= */
+
+.report-detail-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.report-detail-header {
+  margin-bottom: 0;
+  border-radius: 0;
+}
+
+.report-detail-status {
+  padding: 24px 32px 0;
+}
+
+.report-detail-photo {
+  display: block;
+  width: calc(100% - 64px);
+  max-height: 450px;
+  object-fit: cover;
+  margin: 24px 32px 0;
+  border-radius: 12px;
+}
+
+.report-detail-content {
+  padding: 32px;
+  display: grid;
+  gap: 24px;
+}
+
+.report-detail-content p {
+  margin: 6px 0 0;
+}
+
+.report-id {
+  overflow-wrap: anywhere;
+  color: #64748b;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
 @media (max-width: 700px) {
+  .login-card,
+  .module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .login-brand,
+  form {
+    padding: 32px;
+  }
+
+  .coordinates-grid {
+    grid-template-columns: 1fr;
+  }
+
   .location-title {
     flex-direction: column;
   }
@@ -289,5 +480,32 @@ select {
 
   .location-map {
     height: 300px;
+  }
+
+  .reports-header,
+  .report-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .report-item-top {
+    flex-direction: column;
+  }
+
+  .report-item-actions {
+    justify-content: stretch;
+  }
+
+  .report-detail-button {
+    width: 100%;
+  }
+
+  .report-detail-photo {
+    width: calc(100% - 32px);
+    margin: 16px 16px 0;
+  }
+
+  .report-detail-content {
+    padding: 24px 16px;
   }
 }
