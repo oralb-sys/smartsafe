@@ -242,90 +242,11 @@ router.post(
       // 7. RESPUESTA
       // ========================================
 
-      res.status(201).send(`
-
-        <!DOCTYPE html>
-
-        <html lang="es">
-
-        <head>
-
-          <meta charset="UTF-8">
-
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0">
-
-          <title>SmartSafe</title>
-
-          <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet">
-
-        </head>
-
-
-        <body class="bg-light">
-
-          <div class="container py-5">
-
-            <div class="row justify-content-center">
-
-              <div class="col-12 col-md-8 col-lg-6">
-
-                <div class="card shadow-sm">
-
-                  <div class="card-body text-center p-4">
-
-                    <h2 class="text-success">
-                      ✓ Evento reportado
-                    </h2>
-
-                    <p class="mt-3">
-                      Su reporte ha sido registrado correctamente.
-                    </p>
-
-                    <p>
-                      Usuario:
-                      <strong>
-                        ${usuarios[0].nombres}
-                        ${usuarios[0].apellidos}
-                      </strong>
-                    </p>
-
-                    <p>
-                      Estado:
-                      <strong>Pendiente</strong>
-                    </p>
-
-                    <p>
-                      Código del evento:
-                      <strong>${resultado.insertId}</strong>
-                    </p>
-
-                    <a
-                      href="/"
-                      class="btn btn-primary">
-
-                      Registrar otro evento
-
-                    </a>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </body>
-
-        </html>
-
-      `);
+      res.status(201).render('correcto', {
+        nombres: usuarios[0].nombres,
+        apellidos: usuarios[0].apellidos,
+        insertId: resultado.insertId
+      });
 
 
     } catch (error) {
