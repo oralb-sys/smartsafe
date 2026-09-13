@@ -21,23 +21,49 @@ function DashboardPage() {
         <div className="module-grid">
           <article>
             <h3>Registrar incidencia</h3>
+
             <p>
               Reporta baches, residuos, problemas de alumbrado
               o fugas de agua.
             </p>
 
-            <button onClick={() => navigate('/reports/new')}>
+            <button
+              type="button"
+              onClick={() => navigate('/reports/new')}
+            >
               Registrar incidencia
             </button>
           </article>
 
           <article>
+            <h3>Mis reportes</h3>
+
+            <p>
+              Consulta las incidencias que has registrado
+              y revisa su estado actual.
+            </p>
+
+            <button
+              type="button"
+              onClick={() => navigate('/reports')}
+            >
+              Ver mis reportes
+            </button>
+          </article>
+
+          <article>
             <h3>SmartSOS</h3>
+
             <p>
               Módulo académico para alertas de emergencia.
             </p>
 
-            <button disabled>Próximamente</button>
+            <button
+              type="button"
+              disabled
+            >
+              Próximamente
+            </button>
           </article>
         </div>
       </section>
