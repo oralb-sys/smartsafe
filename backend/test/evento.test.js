@@ -39,7 +39,7 @@ describe('POST / (registrar evento)', () => {
         contentType: 'image/jpeg'
       });
 
-    expect(res.statusCode).toBe(200);
+    expect(res.statusCode).toBe(201);
     expect(res.text).toContain('Evento reportado');
     expect(db.executeQuery).toHaveBeenCalledTimes(1);
     expect(db.execute).toHaveBeenCalledTimes(1);

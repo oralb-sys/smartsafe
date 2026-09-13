@@ -242,7 +242,7 @@ router.post(
       // 7. RESPUESTA
       // ========================================
 
-      res.send(`
+      res.status(201).send(`
 
         <!DOCTYPE html>
 
