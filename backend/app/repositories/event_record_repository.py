@@ -74,3 +74,15 @@ class EventRecordRepository:
         return self.session.scalar(
             statement
         )
+
+    def update_status(
+        self,
+        event: EventRecord,
+        new_status: str,
+    ) -> EventRecord:
+        event.status = new_status
+
+        self.session.commit()
+        self.session.refresh(event)
+
+        return event

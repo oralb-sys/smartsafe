@@ -42,6 +42,15 @@ from app.services.report_service import (
     InvalidReportCategoryError,
     ReportService,
 )
+from app.schemas.report import (
+    ReportStatusUpdateRequest,
+    ReportStatusUpdateResponse,
+)
+from app.services.report_status_service import (
+    InvalidStatusTransitionError,
+    ReportNotFoundError as StatusReportNotFoundError,
+    ReportStatusService,
+)
 
 router = APIRouter(
     prefix="/api/v1/reports",
@@ -223,6 +232,81 @@ def get_my_report(
         },
     },
 )
+
+@router.put(
+    "/{report_id}",
+    response_model=ReportStatusUpdateResponse,
+    summary="Gestionar estado del reporte",
+    description=(
+        "Permite a un operador actualizar el estado "
+        "de un reporte siguiendo el flujo permitido."
+    ),
+    responses={
+        401: {
+            "description": "Usuario no autenticado.",
+        },
+        403: {
+            "description": (
+                "Solo un operador puede modificar estados."
+            ),
+        },
+        404: {
+            "description": "El reporte no existe.",
+        },
+        409: {
+            "description": (
+                "Transición de estado no permitida."
+            ),
+        },
+        422: {
+            "description": "Estado solicitado inválido.",
+        },
+    },
+)
+def update_report_status(
+    report_id: str,
+    payload: ReportStatusUpdateRequest,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_database_session),
+) -> ReportStatusUpdateResponse:
+    if current_user.role != "OPERATOR":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Solo un operador puede modificar "
+                "el estado de los reportes."
+            ),
+        )
+
+    repository = EventRecordRepository(
+        session,
+    )
+
+    service = ReportStatusService(
+        repository,
+    )
+
+    try:
+        report = service.update_status(
+            report_id,
+            payload.status,
+        )
+    except StatusReportNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+    except InvalidStatusTransitionError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
+        ) from exc
+
+    return ReportStatusUpdateResponse(
+        id=report.id,
+        status=report.status,
+    )
+
 async def attach_report_photo(
     report_id: str,
     photo: UploadFile = File(...),
