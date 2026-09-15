@@ -102,3 +102,27 @@ def test_get_by_id_and_user_id():
 
     session.scalar.assert_called_once()
     assert result is report
+def test_update_status():
+    session = MagicMock()
+
+    event = SimpleNamespace(
+        id="report-1",
+        status="REPORTED",
+    )
+
+    repository = EventRecordRepository(
+        session,
+    )
+
+    result = repository.update_status(
+        event,
+        "IN_PROGRESS",
+    )
+
+    assert event.status == "IN_PROGRESS"
+    assert result is event
+
+    session.commit.assert_called_once()
+    session.refresh.assert_called_once_with(
+        event
+    )

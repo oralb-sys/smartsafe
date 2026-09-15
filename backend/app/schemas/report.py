@@ -64,3 +64,18 @@ class ReportDetailResponse(BaseModel):
     photo_url: str | None
     status: str
     created_at: datetime
+
+ReportStatus = Literal[
+    "REPORTED",
+    "IN_PROGRESS",
+    "RESOLVED",
+]
+
+
+class ReportStatusUpdateRequest(BaseModel):
+    status: ReportStatus
+
+
+class ReportStatusUpdateResponse(BaseModel):
+    id: str
+    status: str
