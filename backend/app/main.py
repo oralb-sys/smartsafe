@@ -5,6 +5,7 @@ from app.routers.auth import router as auth_router
 from app.routers.reports import router as reports_router
 from fastapi.staticfiles import StaticFiles
 
+from app.routers.emergencies import router as emergencies_router
 
 app = FastAPI(
     title="SmartSafe API",
@@ -57,7 +58,7 @@ app.mount(
 
 app.include_router(auth_router)
 app.include_router(reports_router)
-
+app.include_router(emergencies_router)
 
 @app.get(
     "/health",

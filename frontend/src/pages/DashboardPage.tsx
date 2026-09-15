@@ -51,20 +51,22 @@ function DashboardPage() {
             </button>
           </article>
 
-          <article>
-            <h3>SmartSOS</h3>
+         <article className="sos-dashboard-card">
+        <h3>SmartSOS</h3>
 
-            <p>
-              Módulo académico para alertas de emergencia.
-            </p>
+        <p>
+          Activa una alerta de emergencia
+          cuando necesites ayuda inmediata.
+        </p>
 
-            <button
-              type="button"
-              disabled
-            >
-              Próximamente
-            </button>
-          </article>
+        <button
+          type="button"
+          className="sos-dashboard-button"
+          onClick={() => navigate('/sos')}
+        >
+          Activar SOS
+        </button>
+      </article>
         </div>
       </section>
     </main>

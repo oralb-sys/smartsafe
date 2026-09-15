@@ -77,3 +77,30 @@ export async function getReportDetail(
 
   return response.json()
 }
+export interface EmergencyCreateResponse {
+  id: string
+  status: string
+  created_at: string
+}
+
+export async function createEmergency(
+  token: string,
+): Promise<EmergencyCreateResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/emergencies`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudo activar la alerta SOS.',
+    )
+  }
+
+  return response.json()
+}

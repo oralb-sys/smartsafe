@@ -30,13 +30,14 @@ class EventRecord(Base):
         Text,
         nullable=True,
     )
-    latitude: Mapped[Decimal] = mapped_column(
+    latitude: Mapped[Decimal | None] = mapped_column(
         DECIMAL(9, 6),
-        nullable=False,
+        nullable=True,
     )
-    longitude: Mapped[Decimal] = mapped_column(
+
+    longitude: Mapped[Decimal | None] = mapped_column(
         DECIMAL(9, 6),
-        nullable=False,
+        nullable=True,
     )
     photo_url: Mapped[str | None] = mapped_column(
         String(500),

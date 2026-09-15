@@ -5,6 +5,7 @@ import ReportCreatePage from './pages/ReportCreatePage'
 import './App.css'
 import MyReportsPage from './pages/MyReportsPage'
 import ReportDetailPage from './pages/ReportDetailPage'
+import SosPage from './pages/SosPage'
 
 function App() {
   return (
@@ -16,6 +17,10 @@ function App() {
       <Route
   path="/reports"
   element={<MyReportsPage />}
+/>
+      <Route
+  path="/sos"
+  element={<SosPage />}
 />
 
 <Route
