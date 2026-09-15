@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -81,6 +83,20 @@ class EventRecordRepository:
         new_status: str,
     ) -> EventRecord:
         event.status = new_status
+
+        self.session.commit()
+        self.session.refresh(event)
+
+        return event
+
+    def update_location(
+        self,
+        event: EventRecord,
+        latitude: Decimal,
+        longitude: Decimal,
+    ) -> EventRecord:
+        event.latitude = latitude
+        event.longitude = longitude
 
         self.session.commit()
         self.session.refresh(event)

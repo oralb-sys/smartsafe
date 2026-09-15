@@ -717,3 +717,30 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+/* =========================
+   US-09 - Ubicación SOS
+   ========================= */
+
+.sos-location-section {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.sos-location-section .location-button {
+  margin-bottom: 16px;
+}
+
+.sos-location-save {
+  margin-top: 20px;
+  background: #173b5e;
+}
+
+.sos-location-success {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 600;
+}

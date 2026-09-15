@@ -111,3 +111,40 @@ export async function createEmergency(
 
   return response.json()
 }
+
+export interface EmergencyLocationResponse {
+  id: string
+  latitude: number
+  longitude: number
+  status: string
+}
+
+export async function updateEmergencyLocation(
+  emergencyId: string,
+  latitude: number,
+  longitude: number,
+  token: string,
+): Promise<EmergencyLocationResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/emergencies/${emergencyId}/location`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        latitude,
+        longitude,
+      }),
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudo registrar la ubicación de la emergencia.',
+    )
+  }
+
+  return response.json()
+}
