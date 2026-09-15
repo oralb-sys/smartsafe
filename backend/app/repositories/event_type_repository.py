@@ -14,3 +14,13 @@ class EventTypeRepository:
             EventType.module == "SMART_REPORT",
         )
         return self.session.scalar(statement)
+    def get_smart_sos_type_by_code(
+        self,
+        code: str,
+    ) -> EventType | None:
+        statement = select(EventType).where(
+            EventType.code == code,
+            EventType.module == "SMART_SOS",
+        )
+
+        return self.session.scalar(statement)
