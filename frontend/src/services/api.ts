@@ -77,11 +77,18 @@ export async function getReportDetail(
 
   return response.json()
 }
+
 export interface EmergencyCreateResponse {
   id: string
   status: string
   created_at: string
 }
+
+export type EmergencyType =
+  | 'MEDICAL'
+  | 'ACCIDENT'
+  | 'FIRE'
+  | 'PERSONAL_SECURITY'
 
 export async function createEmergency(
   token: string,

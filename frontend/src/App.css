@@ -629,3 +629,91 @@ button:disabled {
     padding: 32px 20px;
   }
 }
+/* =========================
+   US-08 - Tipo de emergencia
+   ========================= */
+
+.emergency-type-section {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid #e2e8f0;
+  text-align: left;
+}
+
+.emergency-type-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.emergency-type-header h2 {
+  margin: 0;
+  color: #173b5e;
+}
+
+.emergency-type-header p {
+  margin: 8px 0 0;
+  color: #64748b;
+}
+
+.emergency-type-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.emergency-type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  padding: 20px;
+  text-align: left;
+  background: white;
+  color: #173b5e;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.emergency-type-card:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
+.emergency-type-card-selected {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.emergency-type-card strong {
+  font-size: 1rem;
+}
+
+.emergency-type-card span:last-child {
+  color: #64748b;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.emergency-type-icon {
+  font-size: 1.8rem;
+}
+
+.emergency-type-confirmation {
+  margin-top: 20px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1e3a8a;
+}
+
+.emergency-type-confirmation p {
+  margin: 6px 0 0;
+}
+
+@media (max-width: 700px) {
+  .emergency-type-grid {
+    grid-template-columns: 1fr;
+  }
+}
