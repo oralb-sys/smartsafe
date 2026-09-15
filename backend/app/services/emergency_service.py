@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from app.models.event_record import EventRecord
 from app.repositories.event_record_repository import (
     EventRecordRepository,
@@ -8,6 +10,14 @@ from app.repositories.event_type_repository import (
 
 
 class EmergencyTypeNotFoundError(Exception):
+    pass
+
+
+class EmergencyNotFoundError(Exception):
+    pass
+
+
+class EmergencyNotActiveError(Exception):
     pass
 
 
@@ -46,4 +56,39 @@ class EmergencyService:
 
         return self.event_record_repository.create(
             emergency
+        )
+
+    def update_location(
+        self,
+        emergency_id: str,
+        user_id: str,
+        latitude: Decimal,
+        longitude: Decimal,
+    ) -> EventRecord:
+        emergency = (
+            self.event_record_repository
+            .get_by_id_and_user_id(
+                emergency_id,
+                user_id,
+            )
+        )
+
+        if emergency is None:
+            raise EmergencyNotFoundError(
+                "La emergencia no existe o no pertenece al usuario."
+            )
+
+        if emergency.status != "ACTIVE":
+            raise EmergencyNotActiveError(
+                "Solo se puede registrar la ubicación "
+                "de una emergencia activa."
+            )
+
+        return (
+            self.event_record_repository
+            .update_location(
+                emergency,
+                latitude,
+                longitude,
+            )
         )
