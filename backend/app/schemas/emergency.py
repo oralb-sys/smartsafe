@@ -1,7 +1,15 @@
 from datetime import datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, Field
+
+
+EmergencyStatus = Literal[
+    "ACTIVE",
+    "IN_PROGRESS",
+    "FINISHED",
+]
 
 
 class EmergencyCreateResponse(BaseModel):
@@ -44,3 +52,12 @@ class EmergencyDetailResponse(BaseModel):
     latitude: Decimal | None
     longitude: Decimal | None
     created_at: datetime
+
+
+class EmergencyStatusUpdateRequest(BaseModel):
+    status: EmergencyStatus
+
+
+class EmergencyStatusUpdateResponse(BaseModel):
+    id: str
+    status: str
