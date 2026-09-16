@@ -92,3 +92,29 @@ class EmergencyService:
                 longitude,
             )
         )
+
+    def list_emergencies(
+        self,
+    ) -> list[EventRecord]:
+        return (
+            self.event_record_repository
+            .list_smart_sos_emergencies()
+        )
+
+    def get_emergency(
+        self,
+        emergency_id: str,
+    ) -> EventRecord:
+        emergency = (
+            self.event_record_repository
+            .get_smart_sos_emergency_by_id(
+                emergency_id
+            )
+        )
+
+        if emergency is None:
+            raise EmergencyNotFoundError(
+                "La emergencia no existe."
+            )
+
+        return emergency

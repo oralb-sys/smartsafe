@@ -4,10 +4,14 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.models.event_record import EventRecord
+from app.models.event_type import EventType
 
 
 class EventRecordRepository:
-    def __init__(self, session: Session) -> None:
+    def __init__(
+        self,
+        session: Session,
+    ) -> None:
         self.session = session
 
     def create(
@@ -17,17 +21,22 @@ class EventRecordRepository:
         self.session.add(event)
         self.session.commit()
         self.session.refresh(event)
+
         return event
 
     def get_by_id(
         self,
         event_id: str,
     ) -> EventRecord | None:
-        statement = select(EventRecord).where(
+        statement = select(
+            EventRecord
+        ).where(
             EventRecord.id == event_id
         )
 
-        return self.session.scalar(statement)
+        return self.session.scalar(
+            statement
+        )
 
     def update_photo_url(
         self,
@@ -66,11 +75,12 @@ class EventRecordRepository:
         event_id: str,
         user_id: str,
     ) -> EventRecord | None:
-        statement = select(
-            EventRecord
-        ).where(
-            EventRecord.id == event_id,
-            EventRecord.user_id == user_id,
+        statement = (
+            select(EventRecord)
+            .where(
+                EventRecord.id == event_id,
+                EventRecord.user_id == user_id,
+            )
         )
 
         return self.session.scalar(
@@ -102,3 +112,48 @@ class EventRecordRepository:
         self.session.refresh(event)
 
         return event
+
+    def list_smart_sos_emergencies(
+        self,
+    ) -> list[EventRecord]:
+        statement = (
+            select(EventRecord)
+            .join(
+                EventType,
+                EventRecord.event_type_id
+                == EventType.id,
+            )
+            .where(
+                EventType.module == "SMART_SOS"
+            )
+            .order_by(
+                EventRecord.created_at.desc()
+            )
+        )
+
+        return list(
+            self.session.scalars(
+                statement
+            ).all()
+        )
+
+    def get_smart_sos_emergency_by_id(
+        self,
+        emergency_id: str,
+    ) -> EventRecord | None:
+        statement = (
+            select(EventRecord)
+            .join(
+                EventType,
+                EventRecord.event_type_id
+                == EventType.id,
+            )
+            .where(
+                EventRecord.id == emergency_id,
+                EventType.module == "SMART_SOS",
+            )
+        )
+
+        return self.session.scalar(
+            statement
+        )
