@@ -222,3 +222,44 @@ export async function getEmergencyDetail(
 
   return response.json()
 }
+
+
+export type EmergencyStatus =
+  | 'ACTIVE'
+  | 'IN_PROGRESS'
+  | 'FINISHED'
+
+
+export interface EmergencyStatusUpdateResponse {
+  id: string
+  status: EmergencyStatus
+}
+
+
+export async function updateEmergencyStatus(
+  emergencyId: string,
+  newStatus: EmergencyStatus,
+  token: string,
+): Promise<EmergencyStatusUpdateResponse> {
+  const response = await fetch(
+    `${API_BASE_URL}/emergencies/${emergencyId}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        status: newStatus,
+      }),
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudo actualizar el estado de la emergencia.',
+    )
+  }
+
+  return response.json()
+}
