@@ -157,3 +157,47 @@ class EventRecordRepository:
         return self.session.scalar(
             statement
         )
+
+    def list_urban_events(
+        self,
+    ) -> list[
+        tuple[
+            EventRecord,
+            EventType,
+        ]
+    ]:
+        statement = (
+            select(
+                EventRecord,
+                EventType,
+            )
+            .join(
+                EventType,
+                EventRecord.event_type_id
+                == EventType.id,
+            )
+            .where(
+                EventType.module.in_(
+                    [
+                        "SMART_REPORT",
+                        "SMART_SOS",
+                    ]
+                )
+            )
+            .order_by(
+                EventRecord.created_at.desc()
+            )
+        )
+
+        return [
+            (
+                event_record,
+                event_type,
+            )
+            for (
+                event_record,
+                event_type,
+            ) in self.session.execute(
+                statement
+            ).all()
+        ]
