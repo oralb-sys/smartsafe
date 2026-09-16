@@ -21,14 +21,30 @@ class EmergencyNotActiveError(Exception):
     pass
 
 
+class InvalidEmergencyStatusTransitionError(
+    Exception
+):
+    pass
+
+
 class EmergencyService:
+    VALID_STATUS_TRANSITIONS = {
+        "ACTIVE": "IN_PROGRESS",
+        "IN_PROGRESS": "FINISHED",
+    }
+
     def __init__(
         self,
         event_type_repository: EventTypeRepository,
         event_record_repository: EventRecordRepository,
     ) -> None:
-        self.event_type_repository = event_type_repository
-        self.event_record_repository = event_record_repository
+        self.event_type_repository = (
+            event_type_repository
+        )
+
+        self.event_record_repository = (
+            event_record_repository
+        )
 
     def create_emergency(
         self,
@@ -36,7 +52,9 @@ class EmergencyService:
     ) -> EventRecord:
         event_type = (
             self.event_type_repository
-            .get_smart_sos_type_by_code("SOS")
+            .get_smart_sos_type_by_code(
+                "SOS"
+            )
         )
 
         if event_type is None:
@@ -54,8 +72,11 @@ class EmergencyService:
             status="ACTIVE",
         )
 
-        return self.event_record_repository.create(
-            emergency
+        return (
+            self.event_record_repository
+            .create(
+                emergency
+            )
         )
 
     def update_location(
@@ -75,13 +96,15 @@ class EmergencyService:
 
         if emergency is None:
             raise EmergencyNotFoundError(
-                "La emergencia no existe o no pertenece al usuario."
+                "La emergencia no existe "
+                "o no pertenece al usuario."
             )
 
         if emergency.status != "ACTIVE":
             raise EmergencyNotActiveError(
-                "Solo se puede registrar la ubicación "
-                "de una emergencia activa."
+                "Solo se puede registrar "
+                "la ubicación de una "
+                "emergencia activa."
             )
 
         return (
@@ -118,3 +141,45 @@ class EmergencyService:
             )
 
         return emergency
+
+    def update_status(
+        self,
+        emergency_id: str,
+        new_status: str,
+    ) -> EventRecord:
+        emergency = (
+            self.event_record_repository
+            .get_smart_sos_emergency_by_id(
+                emergency_id
+            )
+        )
+
+        if emergency is None:
+            raise EmergencyNotFoundError(
+                "La emergencia no existe."
+            )
+
+        expected_status = (
+            self.VALID_STATUS_TRANSITIONS
+            .get(
+                emergency.status
+            )
+        )
+
+        if expected_status != new_status:
+            raise (
+                InvalidEmergencyStatusTransitionError(
+                    "Transición de estado "
+                    "no permitida: "
+                    f"{emergency.status} "
+                    f"-> {new_status}."
+                )
+            )
+
+        return (
+            self.event_record_repository
+            .update_status(
+                emergency,
+                new_status,
+            )
+        )

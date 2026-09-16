@@ -23,12 +23,15 @@ from app.schemas.emergency import (
     EmergencyListItemResponse,
     EmergencyLocationRequest,
     EmergencyLocationResponse,
+    EmergencyStatusUpdateRequest,
+    EmergencyStatusUpdateResponse,
 )
 from app.services.emergency_service import (
     EmergencyNotActiveError,
     EmergencyNotFoundError,
     EmergencyService,
     EmergencyTypeNotFoundError,
+    InvalidEmergencyStatusTransitionError,
 )
 
 
@@ -44,17 +47,24 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     summary="Activar botón SOS",
     description=(
-        "Inicia una alerta de emergencia para "
-        "el ciudadano autenticado con estado ACTIVE."
+        "Inicia una alerta de emergencia "
+        "para el ciudadano autenticado "
+        "con estado ACTIVE."
     ),
 )
 def create_emergency(
-    current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_database_session),
+    current_user: User = Depends(
+        get_current_user
+    ),
+    session: Session = Depends(
+        get_database_session
+    ),
 ) -> EmergencyCreateResponse:
     if current_user.role != "CITIZEN":
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=(
+                status.HTTP_403_FORBIDDEN
+            ),
             detail=(
                 "Solo un ciudadano puede "
                 "activar una alerta SOS."
@@ -67,12 +77,18 @@ def create_emergency(
     )
 
     try:
-        emergency = service.create_emergency(
-            current_user.id
+        emergency = (
+            service.create_emergency(
+                current_user.id
+            )
         )
+
     except EmergencyTypeNotFoundError as exc:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status_code=(
+                status
+                .HTTP_500_INTERNAL_SERVER_ERROR
+            ),
             detail=str(exc),
         ) from exc
 
@@ -85,23 +101,32 @@ def create_emergency(
 
 @router.get(
     "",
-    response_model=list[EmergencyListItemResponse],
+    response_model=list[
+        EmergencyListItemResponse
+    ],
     summary="Consultar emergencias",
     description=(
-        "Obtiene las alertas SmartSOS registradas. "
-        "Disponible únicamente para operadores."
+        "Obtiene las alertas SmartSOS "
+        "registradas. Disponible únicamente "
+        "para operadores."
     ),
 )
 def list_emergencies(
-    current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_database_session),
+    current_user: User = Depends(
+        get_current_user
+    ),
+    session: Session = Depends(
+        get_database_session
+    ),
 ) -> list[EmergencyListItemResponse]:
     if current_user.role != "OPERATOR":
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=(
+                status.HTTP_403_FORBIDDEN
+            ),
             detail=(
-                "Solo un operador puede consultar "
-                "las emergencias."
+                "Solo un operador puede "
+                "consultar las emergencias."
             ),
         )
 
@@ -110,7 +135,9 @@ def list_emergencies(
         EventRecordRepository(session),
     )
 
-    emergencies = service.list_emergencies()
+    emergencies = (
+        service.list_emergencies()
+    )
 
     return [
         EmergencyListItemResponse(
@@ -129,47 +156,62 @@ def list_emergencies(
     response_model=EmergencyLocationResponse,
     summary="Registrar ubicación SOS",
     description=(
-        "Registra latitud y longitud para una "
-        "emergencia ACTIVE del ciudadano autenticado."
+        "Registra latitud y longitud "
+        "para una emergencia ACTIVE "
+        "del ciudadano autenticado."
     ),
     responses={
         401: {
-            "description": "Usuario no autenticado.",
+            "description": (
+                "Usuario no autenticado."
+            ),
         },
         403: {
             "description": (
-                "Solo un ciudadano puede registrar "
-                "la ubicación de una alerta SOS."
+                "Solo un ciudadano puede "
+                "registrar la ubicación "
+                "de una alerta SOS."
             ),
         },
         404: {
             "description": (
-                "La emergencia no existe o no pertenece "
-                "al usuario autenticado."
+                "La emergencia no existe "
+                "o no pertenece al usuario "
+                "autenticado."
             ),
         },
         409: {
             "description": (
-                "La emergencia ya no se encuentra ACTIVE."
+                "La emergencia ya no se "
+                "encuentra ACTIVE."
             ),
         },
         422: {
-            "description": "Coordenadas inválidas.",
+            "description": (
+                "Coordenadas inválidas."
+            ),
         },
     },
 )
 def update_emergency_location(
     emergency_id: str,
     payload: EmergencyLocationRequest,
-    current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_database_session),
+    current_user: User = Depends(
+        get_current_user
+    ),
+    session: Session = Depends(
+        get_database_session
+    ),
 ) -> EmergencyLocationResponse:
     if current_user.role != "CITIZEN":
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=(
+                status.HTTP_403_FORBIDDEN
+            ),
             detail=(
-                "Solo un ciudadano puede registrar "
-                "la ubicación de una alerta SOS."
+                "Solo un ciudadano puede "
+                "registrar la ubicación "
+                "de una alerta SOS."
             ),
         )
 
@@ -179,22 +221,30 @@ def update_emergency_location(
     )
 
     try:
-        emergency = service.update_location(
-            emergency_id=emergency_id,
-            user_id=current_user.id,
-            latitude=payload.latitude,
-            longitude=payload.longitude,
+        emergency = (
+            service.update_location(
+                emergency_id=(
+                    emergency_id
+                ),
+                user_id=current_user.id,
+                latitude=payload.latitude,
+                longitude=payload.longitude,
+            )
         )
 
     except EmergencyNotFoundError as exc:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=(
+                status.HTTP_404_NOT_FOUND
+            ),
             detail=str(exc),
         ) from exc
 
     except EmergencyNotActiveError as exc:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=(
+                status.HTTP_409_CONFLICT
+            ),
             detail=str(exc),
         ) from exc
 
@@ -206,26 +256,68 @@ def update_emergency_location(
     )
 
 
-@router.get(
+@router.put(
     "/{emergency_id}",
-    response_model=EmergencyDetailResponse,
-    summary="Consultar detalle de emergencia",
-    description=(
-        "Obtiene el detalle de una alerta SmartSOS. "
-        "Disponible únicamente para operadores."
+    response_model=(
+        EmergencyStatusUpdateResponse
     ),
+    summary="Gestionar estado de emergencia",
+    description=(
+        "Actualiza el estado de una "
+        "emergencia SmartSOS siguiendo "
+        "el flujo ACTIVE -> IN_PROGRESS "
+        "-> FINISHED."
+    ),
+    responses={
+        401: {
+            "description": (
+                "Usuario no autenticado."
+            ),
+        },
+        403: {
+            "description": (
+                "Solo un operador puede "
+                "gestionar el estado "
+                "de una emergencia."
+            ),
+        },
+        404: {
+            "description": (
+                "La emergencia no existe."
+            ),
+        },
+        409: {
+            "description": (
+                "Transición de estado "
+                "no permitida."
+            ),
+        },
+        422: {
+            "description": (
+                "Estado solicitado inválido."
+            ),
+        },
+    },
 )
-def get_emergency_detail(
+def update_emergency_status(
     emergency_id: str,
-    current_user: User = Depends(get_current_user),
-    session: Session = Depends(get_database_session),
-) -> EmergencyDetailResponse:
+    payload: EmergencyStatusUpdateRequest,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    session: Session = Depends(
+        get_database_session
+    ),
+) -> EmergencyStatusUpdateResponse:
     if current_user.role != "OPERATOR":
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=(
+                status.HTTP_403_FORBIDDEN
+            ),
             detail=(
-                "Solo un operador puede consultar "
-                "las emergencias."
+                "Solo un operador puede "
+                "gestionar el estado "
+                "de una emergencia."
             ),
         )
 
@@ -235,12 +327,84 @@ def get_emergency_detail(
     )
 
     try:
-        emergency = service.get_emergency(
-            emergency_id
+        emergency = (
+            service.update_status(
+                emergency_id=emergency_id,
+                new_status=payload.status,
+            )
         )
+
     except EmergencyNotFoundError as exc:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=(
+                status.HTTP_404_NOT_FOUND
+            ),
+            detail=str(exc),
+        ) from exc
+
+    except (
+        InvalidEmergencyStatusTransitionError
+    ) as exc:
+        raise HTTPException(
+            status_code=(
+                status.HTTP_409_CONFLICT
+            ),
+            detail=str(exc),
+        ) from exc
+
+    return EmergencyStatusUpdateResponse(
+        id=emergency.id,
+        status=emergency.status,
+    )
+
+
+@router.get(
+    "/{emergency_id}",
+    response_model=EmergencyDetailResponse,
+    summary="Consultar detalle de emergencia",
+    description=(
+        "Obtiene el detalle de una "
+        "alerta SmartSOS. Disponible "
+        "únicamente para operadores."
+    ),
+)
+def get_emergency_detail(
+    emergency_id: str,
+    current_user: User = Depends(
+        get_current_user
+    ),
+    session: Session = Depends(
+        get_database_session
+    ),
+) -> EmergencyDetailResponse:
+    if current_user.role != "OPERATOR":
+        raise HTTPException(
+            status_code=(
+                status.HTTP_403_FORBIDDEN
+            ),
+            detail=(
+                "Solo un operador puede "
+                "consultar las emergencias."
+            ),
+        )
+
+    service = EmergencyService(
+        EventTypeRepository(session),
+        EventRecordRepository(session),
+    )
+
+    try:
+        emergency = (
+            service.get_emergency(
+                emergency_id
+            )
+        )
+
+    except EmergencyNotFoundError as exc:
+        raise HTTPException(
+            status_code=(
+                status.HTTP_404_NOT_FOUND
+            ),
             detail=str(exc),
         ) from exc
 
