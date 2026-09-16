@@ -6,6 +6,8 @@ import './App.css'
 import MyReportsPage from './pages/MyReportsPage'
 import ReportDetailPage from './pages/ReportDetailPage'
 import SosPage from './pages/SosPage'
+import EmergenciesPage from './pages/EmergenciesPage'
+import EmergencyDetailPage from './pages/EmergencyDetailPage'
 
 function App() {
   return (
@@ -26,6 +28,15 @@ function App() {
 <Route
   path="/reports/:id"
   element={<ReportDetailPage />}
+/>
+ <Route
+  path="/emergencies"
+  element={<EmergenciesPage />}
+/>
+
+<Route
+  path="/emergencies/:id"
+  element={<EmergencyDetailPage />}
 />
     </Routes>
   )
