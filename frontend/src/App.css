@@ -744,3 +744,44 @@ button:disabled {
   color: #166534;
   font-weight: 600;
 }
+/* =========================
+   US-10 - Emergencias operador
+   ========================= */
+
+.emergency-item {
+  border-left: 4px solid #dc2626;
+}
+
+.emergency-label {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.emergency-location-summary {
+  margin-top: 12px;
+  color: #64748b;
+}
+
+.emergency-detail-content {
+  margin-top: 24px;
+}
+
+.emergency-map-section {
+  margin-top: 28px;
+}
+
+.emergency-map-section h2 {
+  margin-bottom: 8px;
+  color: #173b5e;
+}
+
+.emergency-map-section p {
+  margin-bottom: 16px;
+  color: #64748b;
+}

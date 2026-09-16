@@ -27,3 +27,20 @@ class EmergencyLocationResponse(BaseModel):
     latitude: Decimal
     longitude: Decimal
     status: str
+
+
+class EmergencyListItemResponse(BaseModel):
+    id: str
+    status: str
+    latitude: Decimal | None
+    longitude: Decimal | None
+    created_at: datetime
+
+
+class EmergencyDetailResponse(BaseModel):
+    id: str
+    user_id: str
+    status: str
+    latitude: Decimal | None
+    longitude: Decimal | None
+    created_at: datetime

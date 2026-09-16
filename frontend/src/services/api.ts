@@ -6,6 +6,7 @@ import type {
 const API_BASE_URL =
   'http://localhost:8000/api/v1'
 
+
 export async function login(
   email: string,
   password: string,
@@ -33,6 +34,7 @@ export async function login(
   return response.json()
 }
 
+
 export async function getMyReports(
   token: string,
 ): Promise<ReportListItem[]> {
@@ -54,6 +56,7 @@ export async function getMyReports(
 
   return response.json()
 }
+
 
 export async function getReportDetail(
   reportId: string,
@@ -78,17 +81,20 @@ export async function getReportDetail(
   return response.json()
 }
 
+
 export interface EmergencyCreateResponse {
   id: string
   status: string
   created_at: string
 }
 
+
 export type EmergencyType =
   | 'MEDICAL'
   | 'ACCIDENT'
   | 'FIRE'
   | 'PERSONAL_SECURITY'
+
 
 export async function createEmergency(
   token: string,
@@ -112,12 +118,14 @@ export async function createEmergency(
   return response.json()
 }
 
+
 export interface EmergencyLocationResponse {
   id: string
   latitude: number
   longitude: number
   status: string
 }
+
 
 export async function updateEmergencyLocation(
   emergencyId: string,
@@ -143,6 +151,72 @@ export async function updateEmergencyLocation(
   if (!response.ok) {
     throw new Error(
       'No se pudo registrar la ubicación de la emergencia.',
+    )
+  }
+
+  return response.json()
+}
+
+
+export interface EmergencyListItem {
+  id: string
+  status: string
+  latitude: number | null
+  longitude: number | null
+  created_at: string
+}
+
+
+export interface EmergencyDetail {
+  id: string
+  user_id: string
+  status: string
+  latitude: number | null
+  longitude: number | null
+  created_at: string
+}
+
+
+export async function getEmergencies(
+  token: string,
+): Promise<EmergencyListItem[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/emergencies`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudieron obtener las emergencias.',
+    )
+  }
+
+  return response.json()
+}
+
+
+export async function getEmergencyDetail(
+  emergencyId: string,
+  token: string,
+): Promise<EmergencyDetail> {
+  const response = await fetch(
+    `${API_BASE_URL}/emergencies/${emergencyId}`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudo obtener el detalle de la emergencia.',
     )
   }
 

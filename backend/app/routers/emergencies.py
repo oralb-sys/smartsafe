@@ -19,6 +19,8 @@ from app.repositories.event_type_repository import (
 )
 from app.schemas.emergency import (
     EmergencyCreateResponse,
+    EmergencyDetailResponse,
+    EmergencyListItemResponse,
     EmergencyLocationRequest,
     EmergencyLocationResponse,
 )
@@ -79,6 +81,47 @@ def create_emergency(
         status=emergency.status,
         created_at=emergency.created_at,
     )
+
+
+@router.get(
+    "",
+    response_model=list[EmergencyListItemResponse],
+    summary="Consultar emergencias",
+    description=(
+        "Obtiene las alertas SmartSOS registradas. "
+        "Disponible únicamente para operadores."
+    ),
+)
+def list_emergencies(
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_database_session),
+) -> list[EmergencyListItemResponse]:
+    if current_user.role != "OPERATOR":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Solo un operador puede consultar "
+                "las emergencias."
+            ),
+        )
+
+    service = EmergencyService(
+        EventTypeRepository(session),
+        EventRecordRepository(session),
+    )
+
+    emergencies = service.list_emergencies()
+
+    return [
+        EmergencyListItemResponse(
+            id=emergency.id,
+            status=emergency.status,
+            latitude=emergency.latitude,
+            longitude=emergency.longitude,
+            created_at=emergency.created_at,
+        )
+        for emergency in emergencies
+    ]
 
 
 @router.put(
@@ -160,4 +203,52 @@ def update_emergency_location(
         latitude=emergency.latitude,
         longitude=emergency.longitude,
         status=emergency.status,
+    )
+
+
+@router.get(
+    "/{emergency_id}",
+    response_model=EmergencyDetailResponse,
+    summary="Consultar detalle de emergencia",
+    description=(
+        "Obtiene el detalle de una alerta SmartSOS. "
+        "Disponible únicamente para operadores."
+    ),
+)
+def get_emergency_detail(
+    emergency_id: str,
+    current_user: User = Depends(get_current_user),
+    session: Session = Depends(get_database_session),
+) -> EmergencyDetailResponse:
+    if current_user.role != "OPERATOR":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "Solo un operador puede consultar "
+                "las emergencias."
+            ),
+        )
+
+    service = EmergencyService(
+        EventTypeRepository(session),
+        EventRecordRepository(session),
+    )
+
+    try:
+        emergency = service.get_emergency(
+            emergency_id
+        )
+    except EmergencyNotFoundError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(exc),
+        ) from exc
+
+    return EmergencyDetailResponse(
+        id=emergency.id,
+        user_id=emergency.user_id,
+        status=emergency.status,
+        latitude=emergency.latitude,
+        longitude=emergency.longitude,
+        created_at=emergency.created_at,
     )
