@@ -1,0 +1,42 @@
+.events-map {
+  width: 100%;
+  height: 560px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.urban-event-marker-wrapper {
+  background: transparent;
+  border: 0;
+}
+
+.urban-event-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 3px solid white;
+  border-radius: 50%;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow:
+    0 3px 8px
+    rgba(15, 23, 42, 0.35);
+}
+
+.urban-event-marker-report {
+  background: #2563eb;
+}
+
+.urban-event-marker-sos {
+  width: 38px;
+  height: 38px;
+  background: #dc2626;
+  font-size: 9px;
+}
+
+.event-popup p {
+  margin: 4px 0;
+}

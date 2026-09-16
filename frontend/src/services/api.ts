@@ -138,8 +138,10 @@ export async function updateEmergencyLocation(
     {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Content-Type':
+          'application/json',
+        Authorization:
+          `Bearer ${token}`,
       },
       body: JSON.stringify({
         latitude,
@@ -185,7 +187,8 @@ export async function getEmergencies(
     {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization:
+          `Bearer ${token}`,
       },
     },
   )
@@ -209,7 +212,8 @@ export async function getEmergencyDetail(
     {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization:
+          `Bearer ${token}`,
       },
     },
   )
@@ -246,8 +250,10 @@ export async function updateEmergencyStatus(
     {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Content-Type':
+          'application/json',
+        Authorization:
+          `Bearer ${token}`,
       },
       body: JSON.stringify({
         status: newStatus,
@@ -258,6 +264,48 @@ export async function updateEmergencyStatus(
   if (!response.ok) {
     throw new Error(
       'No se pudo actualizar el estado de la emergencia.',
+    )
+  }
+
+  return response.json()
+}
+
+
+export type UrbanEventSource =
+  | 'SMART_REPORT'
+  | 'SMART_SOS'
+
+
+export interface UrbanEvent {
+  id: string
+  source: UrbanEventSource
+  type: string
+  status: string
+  description: string | null
+  latitude: number | null
+  longitude: number | null
+  photo_url: string | null
+  created_at: string
+}
+
+
+export async function getUrbanEvents(
+  token: string,
+): Promise<UrbanEvent[]> {
+  const response = await fetch(
+    `${API_BASE_URL}/events`,
+    {
+      method: 'GET',
+      headers: {
+        Authorization:
+          `Bearer ${token}`,
+      },
+    },
+  )
+
+  if (!response.ok) {
+    throw new Error(
+      'No se pudieron obtener los eventos.',
     )
   }
 

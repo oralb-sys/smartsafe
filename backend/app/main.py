@@ -1,11 +1,22 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from app.routers.auth import router as auth_router
-from app.routers.reports import router as reports_router
+from fastapi.middleware.cors import (
+    CORSMiddleware,
+)
 from fastapi.staticfiles import StaticFiles
 
-from app.routers.emergencies import router as emergencies_router
+from app.routers.auth import (
+    router as auth_router,
+)
+from app.routers.emergencies import (
+    router as emergencies_router,
+)
+from app.routers.events import (
+    router as events_router,
+)
+from app.routers.reports import (
+    router as reports_router,
+)
+
 
 app = FastAPI(
     title="SmartSafe API",
@@ -24,15 +35,38 @@ app = FastAPI(
     openapi_tags=[
         {
             "name": "Health",
-            "description": "Operaciones para verificar el estado de la API.",
+            "description": (
+                "Operaciones para verificar "
+                "el estado de la API."
+            ),
         },
         {
             "name": "Authentication",
-            "description": "Autenticación de usuarios de SmartSafe.",
+            "description": (
+                "Autenticación de usuarios "
+                "de SmartSafe."
+            ),
         },
         {
             "name": "SmartReport",
-            "description": "Gestión de incidencias urbanas no urgentes.",
+            "description": (
+                "Gestión de incidencias "
+                "urbanas no urgentes."
+            ),
+        },
+        {
+            "name": "SmartSOS",
+            "description": (
+                "Gestión de alertas "
+                "de emergencia."
+            ),
+        },
+        {
+            "name": "UrbanEvents",
+            "description": (
+                "Consulta unificada de eventos "
+                "SmartReport y SmartSOS."
+            ),
         },
     ],
 )
@@ -52,13 +86,29 @@ app.add_middleware(
 
 app.mount(
     "/uploads",
-    StaticFiles(directory="uploads", check_dir=False),
+    StaticFiles(
+        directory="uploads",
+        check_dir=False,
+    ),
     name="uploads",
 )
 
-app.include_router(auth_router)
-app.include_router(reports_router)
-app.include_router(emergencies_router)
+app.include_router(
+    auth_router
+)
+
+app.include_router(
+    reports_router
+)
+
+app.include_router(
+    emergencies_router
+)
+
+app.include_router(
+    events_router
+)
+
 
 @app.get(
     "/health",
@@ -68,7 +118,9 @@ app.include_router(emergencies_router)
         "Comprueba que el servicio SmartSafe API está disponible "
         "y responde correctamente."
     ),
-    response_description="Estado operativo del servicio.",
+    response_description=(
+        "Estado operativo del servicio."
+    ),
 )
 def health_check() -> dict[str, str]:
     return {

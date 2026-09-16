@@ -1,0 +1,152 @@
+.events-map-page {
+  min-height: 100vh;
+  padding: 32px;
+  background: #f8fafc;
+}
+
+.events-map-card {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.events-map-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.events-map-header h1 {
+  margin: 0;
+  color: #173b5e;
+}
+
+.events-map-header p {
+  margin: 6px 0 0;
+  color: #64748b;
+}
+
+.events-map-legend {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.events-map-legend span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-report {
+  background: #2563eb;
+}
+
+.legend-sos {
+  background: #dc2626;
+}
+
+.events-map-summary {
+  margin-bottom: 14px;
+  color: #475569;
+}
+
+.events-map-layout {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.events-map-main {
+  min-width: 0;
+}
+
+.event-selection-panel {
+  min-height: 280px;
+  padding: 22px;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: white;
+}
+
+.event-selection-panel h2 {
+  margin-top: 12px;
+  color: #173b5e;
+  overflow-wrap: anywhere;
+}
+
+.event-selection-empty {
+  color: #64748b;
+}
+
+.event-source {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.event-source-report {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.event-source-sos {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.event-detail-list {
+  margin: 20px 0;
+}
+
+.event-detail-list div {
+  padding: 10px 0;
+  border-bottom:
+    1px solid #e2e8f0;
+}
+
+.event-detail-list dt {
+  margin-bottom: 3px;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.event-detail-list dd {
+  margin: 0;
+  color: #1e293b;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.event-description {
+  padding-top: 8px;
+}
+
+.event-description p {
+  color: #475569;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .events-map-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .events-map-page {
+    padding: 18px;
+  }
+}

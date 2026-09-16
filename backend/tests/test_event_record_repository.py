@@ -10,18 +10,28 @@ from app.repositories.event_record_repository import (
 def test_create_event_record():
     session = MagicMock()
 
-    repository = EventRecordRepository(session)
+    repository = EventRecordRepository(
+        session
+    )
 
     event = SimpleNamespace(
         id="report-1",
         photo_url=None,
     )
 
-    result = repository.create(event)
+    result = repository.create(
+        event
+    )
 
-    session.add.assert_called_once_with(event)
+    session.add.assert_called_once_with(
+        event
+    )
+
     session.commit.assert_called_once()
-    session.refresh.assert_called_once_with(event)
+
+    session.refresh.assert_called_once_with(
+        event
+    )
 
     assert result is event
 
@@ -33,10 +43,12 @@ def test_get_by_id():
         id="event-1",
     )
 
-    session.scalar.return_value = event
+    session.scalar.return_value = (
+        event
+    )
 
     repository = EventRecordRepository(
-        session,
+        session
     )
 
     result = repository.get_by_id(
@@ -51,7 +63,9 @@ def test_get_by_id():
 def test_update_photo_url():
     session = MagicMock()
 
-    repository = EventRecordRepository(session)
+    repository = EventRecordRepository(
+        session
+    )
 
     event = SimpleNamespace(
         id="report-1",
@@ -67,10 +81,16 @@ def test_update_photo_url():
         photo_url,
     )
 
-    assert event.photo_url == photo_url
+    assert (
+        event.photo_url
+        == photo_url
+    )
 
     session.commit.assert_called_once()
-    session.refresh.assert_called_once_with(event)
+
+    session.refresh.assert_called_once_with(
+        event
+    )
 
     assert result is event
 
@@ -98,7 +118,7 @@ def test_list_by_user_id():
     )
 
     repository = EventRecordRepository(
-        session,
+        session
     )
 
     result = repository.list_by_user_id(
@@ -126,7 +146,7 @@ def test_get_by_id_and_user_id():
     )
 
     repository = EventRecordRepository(
-        session,
+        session
     )
 
     result = (
@@ -151,7 +171,7 @@ def test_update_status():
     )
 
     repository = EventRecordRepository(
-        session,
+        session
     )
 
     result = repository.update_status(
@@ -159,7 +179,10 @@ def test_update_status():
         "IN_PROGRESS",
     )
 
-    assert event.status == "IN_PROGRESS"
+    assert (
+        event.status
+        == "IN_PROGRESS"
+    )
 
     assert result is event
 
@@ -180,7 +203,7 @@ def test_update_location():
     )
 
     repository = EventRecordRepository(
-        session,
+        session
     )
 
     result = repository.update_location(
@@ -189,12 +212,14 @@ def test_update_location():
         Decimal("-71.9751"),
     )
 
-    assert event.latitude == Decimal(
-        "-13.5204"
+    assert (
+        event.latitude
+        == Decimal("-13.5204")
     )
 
-    assert event.longitude == Decimal(
-        "-71.9751"
+    assert (
+        event.longitude
+        == Decimal("-71.9751")
     )
 
     session.commit.assert_called_once()
@@ -229,7 +254,7 @@ def test_list_smart_sos_emergencies():
     )
 
     repository = EventRecordRepository(
-        session,
+        session
     )
 
     result = (
@@ -258,7 +283,7 @@ def test_get_smart_sos_emergency_by_id():
     )
 
     repository = EventRecordRepository(
-        session,
+        session
     )
 
     result = (
@@ -271,3 +296,66 @@ def test_get_smart_sos_emergency_by_id():
     session.scalar.assert_called_once()
 
     assert result is emergency
+
+
+def test_list_urban_events():
+    session = MagicMock()
+
+    report = SimpleNamespace(
+        id="report-1",
+        status="REPORTED",
+    )
+
+    report_type = SimpleNamespace(
+        code="POTHOLE",
+        module="SMART_REPORT",
+    )
+
+    emergency = SimpleNamespace(
+        id="emergency-1",
+        status="ACTIVE",
+    )
+
+    emergency_type = SimpleNamespace(
+        code="SOS",
+        module="SMART_SOS",
+    )
+
+    execution_result = MagicMock()
+
+    execution_result.all.return_value = [
+        (
+            report,
+            report_type,
+        ),
+        (
+            emergency,
+            emergency_type,
+        ),
+    ]
+
+    session.execute.return_value = (
+        execution_result
+    )
+
+    repository = EventRecordRepository(
+        session
+    )
+
+    result = (
+        repository
+        .list_urban_events()
+    )
+
+    session.execute.assert_called_once()
+
+    assert result == [
+        (
+            report,
+            report_type,
+        ),
+        (
+            emergency,
+            emergency_type,
+        ),
+    ]

@@ -1,19 +1,29 @@
-import { useNavigate } from 'react-router-dom'
+import {
+  useNavigate,
+} from 'react-router-dom'
+
 
 function DashboardPage() {
-  const navigate = useNavigate()
+  const navigate =
+    useNavigate()
 
   const role =
     localStorage.getItem(
       'smartsafe_role',
     )
 
+
   return (
     <main className="dashboard-page">
       <header className="dashboard-header">
         <div>
-          <h1>SmartSafe</h1>
-          <p>Panel principal</p>
+          <h1>
+            SmartSafe
+          </h1>
+
+          <p>
+            Panel principal
+          </p>
         </div>
 
         <span className="role-badge">
@@ -21,8 +31,11 @@ function DashboardPage() {
         </span>
       </header>
 
+
       <section>
-        <h2>¿Qué deseas hacer?</h2>
+        <h2>
+          ¿Qué deseas hacer?
+        </h2>
 
         <div className="module-grid">
 
@@ -34,9 +47,10 @@ function DashboardPage() {
                 </h3>
 
                 <p>
-                  Reporta baches, residuos,
-                  problemas de alumbrado
-                  o fugas de agua.
+                  Reporta baches,
+                  residuos, problemas
+                  de alumbrado o fugas
+                  de agua.
                 </p>
 
                 <button
@@ -104,28 +118,54 @@ function DashboardPage() {
 
 
           {role === 'OPERATOR' && (
-            <article className="dashboard-card">
-              <h3>
-                Emergencias SmartSOS
-              </h3>
+            <>
+              <article className="dashboard-card">
+                <h3>
+                  Emergencias SmartSOS
+                </h3>
 
-              <p>
-                Consulta las alertas de
-                emergencia registradas
-                por los ciudadanos.
-              </p>
+                <p>
+                  Consulta las alertas
+                  de emergencia registradas
+                  por los ciudadanos.
+                </p>
 
-              <button
-                type="button"
-                onClick={() =>
-                  navigate(
-                    '/emergencies',
-                  )
-                }
-              >
-                Ver emergencias
-              </button>
-            </article>
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(
+                      '/emergencies',
+                    )
+                  }
+                >
+                  Ver emergencias
+                </button>
+              </article>
+
+
+              <article className="dashboard-card">
+                <h3>
+                  Mapa de eventos
+                </h3>
+
+                <p>
+                  Visualiza incidencias
+                  SmartReport y alertas
+                  SmartSOS en un único mapa.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate(
+                      '/events/map',
+                    )
+                  }
+                >
+                  Ver mapa
+                </button>
+              </article>
+            </>
           )}
 
         </div>
