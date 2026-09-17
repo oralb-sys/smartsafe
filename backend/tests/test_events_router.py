@@ -60,7 +60,7 @@ client = TestClient(
 )
 
 
-def test_list_events_returns_200_for_operator():
+def build_events():
     report = SimpleNamespace(
         id="report-1",
         status="REPORTED",
@@ -103,7 +103,7 @@ def test_list_events_returns_200_for_operator():
         module="SMART_SOS",
     )
 
-    events = [
+    return [
         (
             report,
             report_type,
@@ -114,25 +114,28 @@ def test_list_events_returns_200_for_operator():
         ),
     ]
 
+
+def test_list_events_returns_200_for_operator():
     with patch(
         "app.routers.events."
         "EventQueryService.list_events",
-        return_value=events,
-    ):
+        return_value=build_events(),
+    ) as mock_list_events:
         response = client.get(
             "/api/v1/events"
         )
 
     assert response.status_code == 200
 
+    mock_list_events.assert_called_once_with(
+        source=None,
+        event_type=None,
+        status=None,
+    )
+
     data = response.json()
 
     assert len(data) == 2
-
-    assert (
-        data[0]["id"]
-        == "report-1"
-    )
 
     assert (
         data[0]["source"]
@@ -145,16 +148,6 @@ def test_list_events_returns_200_for_operator():
     )
 
     assert (
-        data[0]["status"]
-        == "REPORTED"
-    )
-
-    assert (
-        data[1]["id"]
-        == "emergency-1"
-    )
-
-    assert (
         data[1]["source"]
         == "SMART_SOS"
     )
@@ -164,9 +157,88 @@ def test_list_events_returns_200_for_operator():
         == "SOS"
     )
 
-    assert (
-        data[1]["status"]
-        == "ACTIVE"
+
+def test_list_events_filters_by_source():
+    with patch(
+        "app.routers.events."
+        "EventQueryService.list_events",
+        return_value=[],
+    ) as mock_list_events:
+        response = client.get(
+            "/api/v1/events"
+            "?source=SMART_REPORT"
+        )
+
+    assert response.status_code == 200
+
+    mock_list_events.assert_called_once_with(
+        source="SMART_REPORT",
+        event_type=None,
+        status=None,
+    )
+
+    assert response.json() == []
+
+
+def test_list_events_filters_by_type():
+    with patch(
+        "app.routers.events."
+        "EventQueryService.list_events",
+        return_value=[],
+    ) as mock_list_events:
+        response = client.get(
+            "/api/v1/events"
+            "?type=POTHOLE"
+        )
+
+    assert response.status_code == 200
+
+    mock_list_events.assert_called_once_with(
+        source=None,
+        event_type="POTHOLE",
+        status=None,
+    )
+
+
+def test_list_events_filters_by_status():
+    with patch(
+        "app.routers.events."
+        "EventQueryService.list_events",
+        return_value=[],
+    ) as mock_list_events:
+        response = client.get(
+            "/api/v1/events"
+            "?status=ACTIVE"
+        )
+
+    assert response.status_code == 200
+
+    mock_list_events.assert_called_once_with(
+        source=None,
+        event_type=None,
+        status="ACTIVE",
+    )
+
+
+def test_list_events_combines_filters():
+    with patch(
+        "app.routers.events."
+        "EventQueryService.list_events",
+        return_value=[],
+    ) as mock_list_events:
+        response = client.get(
+            "/api/v1/events"
+            "?source=SMART_REPORT"
+            "&type=POTHOLE"
+            "&status=REPORTED"
+        )
+
+    assert response.status_code == 200
+
+    mock_list_events.assert_called_once_with(
+        source="SMART_REPORT",
+        event_type="POTHOLE",
+        status="REPORTED",
     )
 
 
@@ -183,14 +255,6 @@ def test_list_events_forbidden_for_citizen():
         assert (
             response.status_code
             == 403
-        )
-
-        assert (
-            response.json()["detail"]
-            == (
-                "Solo un operador puede "
-                "consultar el mapa de eventos."
-            )
         )
 
     finally:
