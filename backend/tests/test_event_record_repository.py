@@ -298,27 +298,16 @@ def test_get_smart_sos_emergency_by_id():
     assert result is emergency
 
 
-def test_list_urban_events():
+def test_list_urban_events_without_filters():
     session = MagicMock()
 
     report = SimpleNamespace(
         id="report-1",
-        status="REPORTED",
     )
 
     report_type = SimpleNamespace(
         code="POTHOLE",
         module="SMART_REPORT",
-    )
-
-    emergency = SimpleNamespace(
-        id="emergency-1",
-        status="ACTIVE",
-    )
-
-    emergency_type = SimpleNamespace(
-        code="SOS",
-        module="SMART_SOS",
     )
 
     execution_result = MagicMock()
@@ -327,11 +316,7 @@ def test_list_urban_events():
         (
             report,
             report_type,
-        ),
-        (
-            emergency,
-            emergency_type,
-        ),
+        )
     ]
 
     session.execute.return_value = (
@@ -342,9 +327,51 @@ def test_list_urban_events():
         session
     )
 
-    result = (
-        repository
-        .list_urban_events()
+    result = repository.list_urban_events()
+
+    session.execute.assert_called_once()
+
+    assert result == [
+        (
+            report,
+            report_type,
+        )
+    ]
+
+
+def test_list_urban_events_with_filters():
+    session = MagicMock()
+
+    report = SimpleNamespace(
+        id="report-1",
+    )
+
+    report_type = SimpleNamespace(
+        code="POTHOLE",
+        module="SMART_REPORT",
+    )
+
+    execution_result = MagicMock()
+
+    execution_result.all.return_value = [
+        (
+            report,
+            report_type,
+        )
+    ]
+
+    session.execute.return_value = (
+        execution_result
+    )
+
+    repository = EventRecordRepository(
+        session
+    )
+
+    result = repository.list_urban_events(
+        source="SMART_REPORT",
+        event_type="POTHOLE",
+        status="REPORTED",
     )
 
     session.execute.assert_called_once()
@@ -353,9 +380,5 @@ def test_list_urban_events():
         (
             report,
             report_type,
-        ),
-        (
-            emergency,
-            emergency_type,
-        ),
+        )
     ]

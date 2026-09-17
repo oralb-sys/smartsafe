@@ -160,6 +160,9 @@ class EventRecordRepository:
 
     def list_urban_events(
         self,
+        source: str | None = None,
+        event_type: str | None = None,
+        status: str | None = None,
     ) -> list[
         tuple[
             EventRecord,
@@ -184,19 +187,35 @@ class EventRecordRepository:
                     ]
                 )
             )
-            .order_by(
-                EventRecord.created_at.desc()
+        )
+
+        if source is not None:
+            statement = statement.where(
+                EventType.module == source
             )
+
+        if event_type is not None:
+            statement = statement.where(
+                EventType.code == event_type
+            )
+
+        if status is not None:
+            statement = statement.where(
+                EventRecord.status == status
+            )
+
+        statement = statement.order_by(
+            EventRecord.created_at.desc()
         )
 
         return [
             (
                 event_record,
-                event_type,
+                event_type_record,
             )
             for (
                 event_record,
-                event_type,
+                event_type_record,
             ) in self.session.execute(
                 statement
             ).all()

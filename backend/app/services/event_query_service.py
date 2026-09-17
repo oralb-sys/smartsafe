@@ -16,6 +16,9 @@ class EventQueryService:
 
     def list_events(
         self,
+        source: str | None = None,
+        event_type: str | None = None,
+        status: str | None = None,
     ) -> list[
         tuple[
             EventRecord,
@@ -24,5 +27,9 @@ class EventQueryService:
     ]:
         return (
             self.event_record_repository
-            .list_urban_events()
+            .list_urban_events(
+                source=source,
+                event_type=event_type,
+                status=status,
+            )
         )

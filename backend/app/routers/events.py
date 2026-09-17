@@ -2,6 +2,7 @@ from fastapi import (
     APIRouter,
     Depends,
     HTTPException,
+    Query,
     status,
 )
 from sqlalchemy.orm import Session
@@ -31,14 +32,35 @@ router = APIRouter(
 @router.get(
     "",
     response_model=list[UrbanEventResponse],
-    summary="Consultar eventos para mapa",
+    summary="Consultar UrbanEvents",
     description=(
-        "Obtiene eventos de SmartReport y "
-        "SmartSOS para su visualización "
-        "unificada en el mapa."
+        "Obtiene eventos SmartReport y SmartSOS. "
+        "Permite filtrar por source, type y status."
     ),
 )
 def list_events(
+    source: str | None = Query(
+        default=None,
+        description=(
+            "Origen del evento: "
+            "SMART_REPORT o SMART_SOS."
+        ),
+    ),
+    event_type: str | None = Query(
+        default=None,
+        alias="type",
+        description=(
+            "Tipo de evento, por ejemplo "
+            "POTHOLE, WASTE o SOS."
+        ),
+    ),
+    event_status: str | None = Query(
+        default=None,
+        alias="status",
+        description=(
+            "Estado del evento."
+        ),
+    ),
     current_user: User = Depends(
         get_current_user
     ),
@@ -53,7 +75,7 @@ def list_events(
             ),
             detail=(
                 "Solo un operador puede "
-                "consultar el mapa de eventos."
+                "consultar los eventos."
             ),
         )
 
@@ -63,13 +85,17 @@ def list_events(
         )
     )
 
-    events = service.list_events()
+    events = service.list_events(
+        source=source,
+        event_type=event_type,
+        status=event_status,
+    )
 
     return [
         UrbanEventResponse(
             id=event.id,
-            source=event_type.module,
-            type=event_type.code,
+            source=event_type_record.module,
+            type=event_type_record.code,
             status=event.status,
             description=event.description,
             latitude=event.latitude,
@@ -79,6 +105,6 @@ def list_events(
         )
         for (
             event,
-            event_type,
+            event_type_record,
         ) in events
     ]
