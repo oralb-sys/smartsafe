@@ -12,30 +12,22 @@ const db = require('../bin/db');
 // ========================================
 
 const storage = multer.diskStorage({
-
   destination: function (req, file, cb) {
-
     cb(
       null,
       path.join(__dirname, '../public/uploads')
     );
-
   },
 
   filename: function (req, file, cb) {
-
     const extension =
       path.extname(file.originalname);
-
     const nombre =
       'evento-' +
       Date.now() +
       extension;
-
     cb(null, nombre);
-
   }
-
 });
 
 
@@ -78,11 +70,214 @@ router.get('/', (req, res, next) => {
 
 
 // ========================================
-// REGISTRAR EVENTO
+// REGISTRAR EVENTO DESDE LA PÁGINA WEB
 // ========================================
 
-router.post(
-  '/',
+router.post('/', upload.single('foto'), async (req, res, next) => {
+
+  try {
+
+    const {
+      usuario,
+      tipo,
+      descripcion,
+      latitud,
+      longitud
+    } = req.body;
+
+
+    // ========================================
+    // 1. VALIDACIONES
+    // ========================================
+
+    if (!usuario) {
+
+      return res.status(400).send(
+        'Debe ingresar el DNI del usuario.'
+      );
+
+    }
+
+
+    if (!tipo) {
+
+      return res.status(400).send(
+        'Debe seleccionar el tipo de evento.'
+      );
+
+    }
+
+
+    if (!descripcion) {
+
+      return res.status(400).send(
+        'Debe ingresar una descripción.'
+      );
+
+    }
+
+
+    if (!latitud || !longitud) {
+
+      return res.status(400).send(
+        'No se pudieron obtener las coordenadas GPS.'
+      );
+
+    }
+
+
+    if (!req.file) {
+
+      return res.status(400).send(
+        'Debe adjuntar una fotografía.'
+      );
+
+    }
+
+
+    // ========================================
+    // 2. BUSCAR USUARIO
+    // ========================================
+
+    const usuarios =
+      await db.executeQuery(
+        `
+        SELECT id, nombres, apellidos
+        FROM tUsuario
+        WHERE dni = ?
+        LIMIT 1
+        `,
+        [usuario]
+      );
+
+
+    // ========================================
+    // 3. VERIFICAR USUARIO
+    // ========================================
+
+    if (usuarios.length === 0) {
+
+      return res.status(404).send(
+        'El DNI ingresado no corresponde a un usuario registrado.'
+      );
+
+    }
+
+
+    const idUsuario = usuarios[0].id;
+
+
+    // ========================================
+    // 4. RUTA DE LA FOTO
+    // ========================================
+
+    const fotoPath =
+      '/uploads/' + req.file.filename;
+
+
+    // ========================================
+    // 5. CREAR COORDENADAS
+    // ========================================
+
+    const punto =
+      `POINT(${longitud} ${latitud})`;
+
+
+    // ========================================
+    // 6. INSERTAR EVENTO
+    // ========================================
+
+    const sql = `
+      INSERT INTO tEvento
+      (
+        id_usuario,
+        tipo,
+        id_personal,
+        descripcion,
+        foto_path,
+        coordenadas,
+        estado,
+        fue_atendido
+      )
+      VALUES
+      (
+        ?,
+        ?,
+        NULL,
+        ?,
+        ?,
+        ST_GeomFromText(?),
+        'Pendiente',
+        FALSE
+      )
+    `;
+
+
+    const resultado =
+      await db.execute(
+        sql,
+        [
+          idUsuario,
+          tipo,
+          descripcion,
+          fotoPath,
+          punto
+        ]
+      );
+
+
+    // ========================================
+    // 7. RESPUESTA
+    // ========================================
+
+    res.status(201).render('correcto', {
+
+      nombres: usuarios[0].nombres,
+
+      apellidos: usuarios[0].apellidos,
+
+      insertId: resultado.insertId
+
+    });
+
+
+  } catch (error) {
+
+    console.error(
+      'Error al registrar evento:',
+      error
+    );
+
+    next(error);
+
+  }
+
+});
+
+
+// =====================================================
+// API REST - REGISTRAR EVENTO
+// =====================================================
+//
+// Esta ruta permite que otras aplicaciones,
+// por ejemplo Python, puedan registrar eventos.
+//
+// POST /api/eventos
+//
+// Recibe:
+//   usuario
+//   foto
+//   latitud
+//   longitud
+//   tipo
+//   descripcion
+//
+// Responde:
+//   JSON
+//
+// =====================================================
+
+router.post('/api/eventos',
   upload.single('foto'),
   async (req, res, next) => {
 
@@ -103,51 +298,56 @@ router.post(
 
       if (!usuario) {
 
-        return res.status(400).send(
-          'Debe ingresar el DNI del usuario.'
-        );
+        return res.status(400).json({
+          success: false,
+          mensaje: 'Debe ingresar el DNI del usuario.'
+        });
 
       }
 
 
       if (!tipo) {
 
-        return res.status(400).send(
-          'Debe seleccionar el tipo de evento.'
-        );
+        return res.status(400).json({
+          success: false,
+          mensaje: 'Debe seleccionar el tipo de evento.'
+        });
 
       }
 
 
       if (!descripcion) {
 
-        return res.status(400).send(
-          'Debe ingresar una descripción.'
-        );
+        return res.status(400).json({
+          success: false,
+          mensaje: 'Debe ingresar una descripción.'
+        });
 
       }
 
 
       if (!latitud || !longitud) {
 
-        return res.status(400).send(
-          'No se pudieron obtener las coordenadas GPS.'
-        );
+        return res.status(400).json({
+          success: false,
+          mensaje: 'No se pudieron obtener las coordenadas GPS.'
+        });
 
       }
 
 
       if (!req.file) {
 
-        return res.status(400).send(
-          'Debe adjuntar una fotografía.'
-        );
+        return res.status(400).json({
+          success: false,
+          mensaje: 'Debe adjuntar una fotografía.'
+        });
 
       }
 
 
       // ========================================
-      // 2. BUSCAR USUARIO
+      // 2. BUSCAR USUARIO POR DNI
       // ========================================
 
       const usuarios =
@@ -168,31 +368,30 @@ router.post(
 
       if (usuarios.length === 0) {
 
-        return res.status(404).send(
-          'El DNI ingresado no corresponde a un usuario registrado.'
-        );
+        return res.status(404).json({
+
+          success: false,
+
+          mensaje:
+            'El DNI ingresado no corresponde a un usuario registrado.'
+
+        });
 
       }
 
-
-      const idUsuario =
-        usuarios[0].id;
-
+      const idUsuario = usuarios[0].id;
 
       // ========================================
       // 4. RUTA DE LA FOTO
       // ========================================
 
-      const fotoPath =
-        '/uploads/' + req.file.filename;
-
+      const fotoPath = '/uploads/' + req.file.filename;
 
       // ========================================
       // 5. CREAR COORDENADAS
       // ========================================
 
-      const punto =
-        `POINT(${longitud} ${latitud})`;
+      const punto = `POINT(${longitud} ${latitud})`;
 
 
       // ========================================
@@ -225,39 +424,39 @@ router.post(
       `;
 
 
-      const resultado =
-        await db.execute(
-          sql,
-          [
-            idUsuario,
-            tipo,
-            descripcion,
-            fotoPath,
-            punto
-          ]
-        );
+      const resultado = await db.execute(
+        sql,
+        [
+          idUsuario,
+          tipo,
+          descripcion,
+          fotoPath,
+          punto
+        ]
+      );
 
 
       // ========================================
-      // 7. RESPUESTA
+      // 7. RESPUESTA JSON
       // ========================================
 
-      res.status(201).render('correcto', {
-        nombres: usuarios[0].nombres,
-        apellidos: usuarios[0].apellidos,
-        insertId: resultado.insertId
+      return res.status(201).json({
+
+        success: true,
+        mensaje: 'Evento registrado correctamente.',
+        id_evento: Number(resultado.insertId),
+        usuario: {
+          dni: usuario,
+          nombres: usuarios[0].nombres,
+          apellidos: usuarios[0].apellidos
+        },
+        foto: fotoPath
       });
 
 
     } catch (error) {
-
-      console.error(
-        'Error al registrar evento:',
-        error
-      );
-
+      console.error('Error en API /api/eventos:', error);
       next(error);
-
     }
 
   }
