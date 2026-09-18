@@ -95,7 +95,7 @@ router.post('/', upload.single('foto'), async (req, res, next) => {
 
 });
 
-
+//HOLA
 // =====================================================
 // API REST - REGISTRAR EVENTO
 // =====================================================
