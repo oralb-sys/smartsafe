@@ -104,7 +104,8 @@ async function registrarEvento({
       'Pendiente',
       FALSE
     )
-  `;
+  `,[idUsuario, tipo, descripcion, fotoPath, punto]
+  ;
 
   const resultado = await db.execute(
     sql,
@@ -124,7 +125,6 @@ async function registrarEvento({
   };
 
 }
-
 
 module.exports = {
   registrarEvento,
