@@ -15,7 +15,7 @@
 
 ## Pruebas de la API
 
-- 📓 **Notebook de pruebas (Google Colab):** [Abrir pruebaAPI.ipynb en Colab](https://colab.research.google.com/github/oralb-sys/smartsafe/blob/main/Pruebas%20API/pruebaAPI.ipynb)
+- 📓 **Notebook de pruebas (Google Colab):** [![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/oralb-sys/smartsafe/blob/main/Pruebas%20API/pruebaAPI.ipynb)
 - 💻 **Cliente de prueba en C#:** [Ver / descargar Program.cs](https://github.com/oralb-sys/smartsafe/blob/main/Pruebas%20API/Program.cs)
 
 ## Documentación
