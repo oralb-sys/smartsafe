@@ -9,9 +9,9 @@
 | Integrante | Módulo | Rama |
 |---|---|---|
 | Rony Villafuerte Serna | Backend (Node.js + Express + MariaDB) | `feature/rony-modulos` |
-| Lida Leon Nuñez | _(módulo)_ | `lida` |
-| Harry Gonzales Condori | _(módulo)_ | `main` |
-| William Chavez Espinoza | _(módulo)_ | `william` |
+| Lida Leon Nuñez | Base de Datos | `lida` |
+| Harry Gonzales Condori | Planificación y Equipo | `main` |
+| William Chavez Espinoza | Optimización | `william` |
 
 ## Pruebas de la API
 
