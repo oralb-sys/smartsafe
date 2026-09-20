@@ -20,5 +20,5 @@
 
 ## Documentación
 
-- 📄 [Tareas del curso — Tópicos de Software (PDF)](https://github.com/oralb-sys/smartsafe/blob/main/doc/01%20EPG_TareasCurso__TopicosSoftware_.pdf)
-- 📄 [Informe Técnico SmartSafe (PDF)](https://github.com/oralb-sys/smartsafe/blob/main/doc/02%20SmartSafe_Informe_Tecnico.pdf)
+- 📄 [Tareas del curso — Tópicos de Software (PDF)](https://github.com/oralb-sys/smartsafe/blob/main/docs/01%20EPG_TareasCurso__TopicosSoftware_.pdf)
+- 📄 [Informe Técnico SmartSafe (PDF)](https://github.com/oralb-sys/smartsafe/blob/main/docs/02%20SmartSafe_Informe_Tecnico.pdf)
