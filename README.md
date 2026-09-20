@@ -9,7 +9,7 @@
 | Integrante | Módulo | Rama |
 |---|---|---|
 | Rony Villafuerte Serna | Backend (Node.js + Express + MariaDB) | `feature/rony-modulos` |
-| Lida Leon Nuñez | Patron de Diseño | `lida` |
+| Lida León Nuñez | Patron de Diseño | `lida` |
 | Harry Gonzales Condori | Planificación y Equipo | `main` |
 | William Chavez Espinoza | Optimización | `william` |
 
