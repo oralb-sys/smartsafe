@@ -1,6 +1,6 @@
 ## 🔗 Aplicación desplegada
 
-**Demo en producción:** [daii.unsaac.edu.pe/smartsafe](https://daii.unsaac.edu.pe/smartsafe)
+**Demo en producción: (Ingresar desde dispositivo que tenga GPS)** [daii.unsaac.edu.pe/smartsafe](https://daii.unsaac.edu.pe/smartsafe)
 
 ![Tests](https://github.com/oralb-sys/smartsafe/actions/workflows/tests.yml/badge.svg?branch=main)
 
